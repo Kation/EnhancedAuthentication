@@ -8,9 +8,23 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D5E410FE-6F1E-499B-A254-7AB2E3D6B65F}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
+		pack.bat = pack.bat
+		Readme.md = Readme.md
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Abstractions", "src\Wodsoft.EnhancedAuthentication.Abstractions\Wodsoft.EnhancedAuthentication.Abstractions.xproj", "{EE06572F-37C0-40F9-99F7-977CD2D8758F}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Core", "src\Wodsoft.EnhancedAuthentication.Core\Wodsoft.EnhancedAuthentication.Core.xproj", "{FAEF9D0F-E87B-422C-B23E-945F6F181F55}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication", "src\Wodsoft.EnhancedAuthentication\Wodsoft.EnhancedAuthentication.xproj", "{0631666E-8E31-4CDD-B053-124F54438F1F}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Client", "src\Wodsoft.EnhancedAuthentication.Client\Wodsoft.EnhancedAuthentication.Client.xproj", "{73B7BF56-D4F9-4709-803A-FCB3F982F2F7}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Mvc", "src\Wodsoft.EnhancedAuthentication.Mvc\Wodsoft.EnhancedAuthentication.Mvc.xproj", "{AFFBBDA2-66A5-454F-9137-C5EECDB61747}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{387137C6-251F-4F94-AEA9-5B996268CC52}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.UnitTest", "test\Wodsoft.EnhancedAuthentication.UnitTest\Wodsoft.EnhancedAuthentication.UnitTest.xproj", "{2B981F60-AFB9-46DC-8870-F93A4B7EB431}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,11 +36,36 @@ Global
 		{EE06572F-37C0-40F9-99F7-977CD2D8758F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE06572F-37C0-40F9-99F7-977CD2D8758F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE06572F-37C0-40F9-99F7-977CD2D8758F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAEF9D0F-E87B-422C-B23E-945F6F181F55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAEF9D0F-E87B-422C-B23E-945F6F181F55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAEF9D0F-E87B-422C-B23E-945F6F181F55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAEF9D0F-E87B-422C-B23E-945F6F181F55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0631666E-8E31-4CDD-B053-124F54438F1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0631666E-8E31-4CDD-B053-124F54438F1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0631666E-8E31-4CDD-B053-124F54438F1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0631666E-8E31-4CDD-B053-124F54438F1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73B7BF56-D4F9-4709-803A-FCB3F982F2F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73B7BF56-D4F9-4709-803A-FCB3F982F2F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73B7BF56-D4F9-4709-803A-FCB3F982F2F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73B7BF56-D4F9-4709-803A-FCB3F982F2F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFFBBDA2-66A5-454F-9137-C5EECDB61747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFFBBDA2-66A5-454F-9137-C5EECDB61747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFFBBDA2-66A5-454F-9137-C5EECDB61747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFFBBDA2-66A5-454F-9137-C5EECDB61747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B981F60-AFB9-46DC-8870-F93A4B7EB431}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B981F60-AFB9-46DC-8870-F93A4B7EB431}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B981F60-AFB9-46DC-8870-F93A4B7EB431}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B981F60-AFB9-46DC-8870-F93A4B7EB431}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EE06572F-37C0-40F9-99F7-977CD2D8758F} = {DACEE991-B7B4-49E1-B011-486970880626}
+		{FAEF9D0F-E87B-422C-B23E-945F6F181F55} = {DACEE991-B7B4-49E1-B011-486970880626}
+		{0631666E-8E31-4CDD-B053-124F54438F1F} = {DACEE991-B7B4-49E1-B011-486970880626}
+		{73B7BF56-D4F9-4709-803A-FCB3F982F2F7} = {DACEE991-B7B4-49E1-B011-486970880626}
+		{AFFBBDA2-66A5-454F-9137-C5EECDB61747} = {DACEE991-B7B4-49E1-B011-486970880626}
+		{2B981F60-AFB9-46DC-8870-F93A4B7EB431} = {387137C6-251F-4F94-AEA9-5B996268CC52}
 	EndGlobalSection
 EndGlobal

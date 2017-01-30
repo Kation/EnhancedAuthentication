@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Wodsoft.EnhancedAuthentication.Abstractions
+namespace Wodsoft.EnhancedAuthentication.UnitTest
 {
-    public class Class1
+    public class Program
     {
-        public Class1()
+        public static void Main(string[] args)
         {
         }
     }

@@ -6,7 +6,7 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>ee06572f-37c0-40f9-99f7-977cd2d8758f</ProjectGuid>
+    <ProjectGuid>faef9d0f-e87b-422c-b23e-945f6f181f55</ProjectGuid>
     <RootNamespace>Wodsoft.EnhancedAuthentication</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>

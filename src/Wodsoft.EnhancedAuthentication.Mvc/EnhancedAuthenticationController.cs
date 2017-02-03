@@ -16,7 +16,6 @@ namespace Wodsoft.EnhancedAuthentication.Mvc
         /// 请求证书。
         /// </summary>
         /// <returns></returns>
-        [RequireHttps]
         [HttpPost]
         public async Task<IActionResult> RequestCertificate([FromForm]string username, [FromForm]string password)
         {
@@ -33,13 +32,12 @@ namespace Wodsoft.EnhancedAuthentication.Mvc
             return new AppInformation { AppId = Request.Form["appId"] };
         }
 
-        protected abstract bool CheckIsAdmin(string username, string password);
+        protected abstract Task<bool> CheckIsAdmin(string username, string password);
 
         /// <summary>
         /// 申请证书。
         /// </summary>
         /// <returns></returns>
-        [RequireHttps]
         [HttpPost]
         public async Task<IActionResult> ApplyCertificate([FromQuery]string callback)
         {
@@ -54,7 +52,6 @@ namespace Wodsoft.EnhancedAuthentication.Mvc
         /// 撤销的证书列表。
         /// </summary>
         /// <returns></returns>
-        [RequireHttps]
         [HttpGet]
         public async Task<IActionResult> RevokedCertificate([FromQuery]DateTime? startDate)
         {
@@ -67,7 +64,6 @@ namespace Wodsoft.EnhancedAuthentication.Mvc
         /// 续签证书。
         /// </summary>
         /// <returns></returns>
-        [RequireHttps]
         [HttpPost]
         public async Task<IActionResult> RenewCertificate([FromForm]string cert, [FromQuery]int expiredDate, [FromQuery]string signature)
         {
@@ -136,7 +132,7 @@ namespace Wodsoft.EnhancedAuthentication.Mvc
             var service = HttpContext.RequestServices.GetRequiredService<EnhancedAuthenticationService>();
             if (!service.Certificate.VerifyCertificate(certificate))
                 return Unauthorized();
-            var userProvider = HttpContext.RequestServices.GetRequiredService<IUserProvider>();
+            var userProvider = HttpContext.RequestServices.GetRequiredService<IEnhancedAuthenticationUserProvider>();
             var user = await userProvider.GetUserAsync();
             if (user == null)
                 return Redirect(userProvider.GetSignInUrl(Url.Action("Authorize", new { cert = cert, requestLevel = requestLevel, returnUrl = returnUrl })));

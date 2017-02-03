@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Wodsoft.EnhancedAuthentication
 {
-    public interface IUser
+    public interface IEnhancedAuthenticationUser
     {
         string UserId { get; }
 

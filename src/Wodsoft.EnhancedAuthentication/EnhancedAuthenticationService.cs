@@ -10,21 +10,25 @@ namespace Wodsoft.EnhancedAuthentication
 {
     public class EnhancedAuthenticationService
     {
-        public IUserProvider UserProvider { get; private set; }
+        public IEnhancedAuthenticationUserProvider UserProvider { get; private set; }
 
         public IEnhancedAuthenticationCertificateProvider CertificateProvider { get; private set; }
 
         public EnhancedAuthenticationCertificate Certificate { get; private set; }
 
-        public IEnhancedAuthenticationOptions Options { get; private set; }
-
-        public EnhancedAuthenticationService(EnhancedAuthenticationCertificate certificate)
+        public EnhancedAuthenticationService(EnhancedAuthenticationCertificate certificate, IEnhancedAuthenticationUserProvider userProvider, IEnhancedAuthenticationCertificateProvider certificateProvider)
         {
             if (certificate == null)
                 throw new ArgumentNullException(nameof(certificate));
+            if (userProvider == null)
+                throw new ArgumentNullException(nameof(userProvider));
+            if (certificateProvider == null)
+                throw new ArgumentNullException(nameof(certificateProvider));
             if (certificate.HasPrivateKey)
                 throw new ArgumentException(nameof(certificate), "传入的证书必须有私钥。");
             Certificate = certificate;
+            UserProvider = userProvider;
+            CertificateProvider = certificateProvider;
         }
 
         public async Task<EnhancedAuthenticationCertificate> CreateCertificateAsync(AppInformation appInfo)
@@ -32,11 +36,12 @@ namespace Wodsoft.EnhancedAuthentication
             if (appInfo == null)
                 throw new ArgumentNullException(nameof(appInfo));
             int certId = await CertificateProvider.NewIdAsync();
+            byte[] appInfoData = Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(appInfo));
             EnhancedAuthenticationCertificateGenerator cert = new EnhancedAuthenticationCertificateGenerator(
                 CertificateProvider.KeySize,
                 CertificateProvider.Period,
                 certId,
-                Options.Serialize(appInfo));
+                appInfoData);
             return cert;
         }
 
@@ -70,7 +75,7 @@ namespace Wodsoft.EnhancedAuthentication
             return CertificateProvider.GetRevokedListAsync(startDate);
         }
 
-        public string GetUserToken(EnhancedAuthenticationCertificate cert, IUser user, string level, out string signature)
+        public string GetUserToken(EnhancedAuthenticationCertificate cert, IEnhancedAuthenticationUser user, string level, out string signature)
         {
             if (cert == null)
                 throw new ArgumentNullException(nameof(cert));

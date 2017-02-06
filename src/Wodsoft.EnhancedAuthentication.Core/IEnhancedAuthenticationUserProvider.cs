@@ -8,8 +8,8 @@ namespace Wodsoft.EnhancedAuthentication
     public interface IEnhancedAuthenticationUserProvider
     {
         Task<IEnhancedAuthenticationUser> GetUserAsync();
-        Task<IEnhancedAuthenticationUser> GetUserAsync(string userId);
-        string GetSignInUrl(string returnUrl);        
+        string GetSignInUrl(string returnUrl);
+        string GetConfirmUrl(string returnUrl);
         UserLevelStatus CheckLevel(IEnhancedAuthenticationUser user, string level);
     }
 }

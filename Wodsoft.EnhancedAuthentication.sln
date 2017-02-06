@@ -26,6 +26,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{387137C6-2
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.UnitTest", "test\Wodsoft.EnhancedAuthentication.UnitTest\Wodsoft.EnhancedAuthentication.UnitTest.xproj", "{2B981F60-AFB9-46DC-8870-F93A4B7EB431}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{193DF88C-4C88-46FF-833A-21A4B728AF89}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Sample.ServiceHost", "sample\Wodsoft.EnhancedAuthentication.Sample.ServiceHost\Wodsoft.EnhancedAuthentication.Sample.ServiceHost.xproj", "{234C869A-B168-4D6D-B65F-D5D1F35FD1BC}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Sample.ThirdPart", "sample\Wodsoft.EnhancedAuthentication.Sample.ThirdPart\Wodsoft.EnhancedAuthentication.Sample.ThirdPart.xproj", "{EFD5BBB5-1A2F-4BE9-94FE-61456A223462}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Client.AspNetCore", "src\Wodsoft.EnhancedAuthentication.Client.AspNetCore\Wodsoft.EnhancedAuthentication.Client.AspNetCore.xproj", "{5EFCE873-95F7-4C09-B51B-97D915867FBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +64,18 @@ Global
 		{2B981F60-AFB9-46DC-8870-F93A4B7EB431}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B981F60-AFB9-46DC-8870-F93A4B7EB431}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B981F60-AFB9-46DC-8870-F93A4B7EB431}.Release|Any CPU.Build.0 = Release|Any CPU
+		{234C869A-B168-4D6D-B65F-D5D1F35FD1BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{234C869A-B168-4D6D-B65F-D5D1F35FD1BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{234C869A-B168-4D6D-B65F-D5D1F35FD1BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{234C869A-B168-4D6D-B65F-D5D1F35FD1BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFD5BBB5-1A2F-4BE9-94FE-61456A223462}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFD5BBB5-1A2F-4BE9-94FE-61456A223462}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFD5BBB5-1A2F-4BE9-94FE-61456A223462}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFD5BBB5-1A2F-4BE9-94FE-61456A223462}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EFCE873-95F7-4C09-B51B-97D915867FBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EFCE873-95F7-4C09-B51B-97D915867FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EFCE873-95F7-4C09-B51B-97D915867FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EFCE873-95F7-4C09-B51B-97D915867FBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,5 +87,8 @@ Global
 		{73B7BF56-D4F9-4709-803A-FCB3F982F2F7} = {DACEE991-B7B4-49E1-B011-486970880626}
 		{AFFBBDA2-66A5-454F-9137-C5EECDB61747} = {DACEE991-B7B4-49E1-B011-486970880626}
 		{2B981F60-AFB9-46DC-8870-F93A4B7EB431} = {387137C6-251F-4F94-AEA9-5B996268CC52}
+		{234C869A-B168-4D6D-B65F-D5D1F35FD1BC} = {193DF88C-4C88-46FF-833A-21A4B728AF89}
+		{EFD5BBB5-1A2F-4BE9-94FE-61456A223462} = {193DF88C-4C88-46FF-833A-21A4B728AF89}
+		{5EFCE873-95F7-4C09-B51B-97D915867FBE} = {DACEE991-B7B4-49E1-B011-486970880626}
 	EndGlobalSection
 EndGlobal

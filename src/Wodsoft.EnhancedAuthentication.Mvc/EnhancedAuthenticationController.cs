@@ -19,7 +19,7 @@ namespace Wodsoft.EnhancedAuthentication.Mvc
         [HttpPost]
         public async Task<IActionResult> RequestCertificate([FromForm]string username, [FromForm]string password)
         {
-            if (!CheckIsAdmin(username, password))
+            if (!await CheckIsAdmin(username, password))
                 return Unauthorized();
             var appInfo = GetAppInformation();
             var service = HttpContext.RequestServices.GetRequiredService<EnhancedAuthenticationService>();
@@ -140,7 +140,7 @@ namespace Wodsoft.EnhancedAuthentication.Mvc
             if (levelStatus == UserLevelStatus.Unauthorized)
                 return Redirect(returnUrl + "?status=unauthorized");
             else if (levelStatus == UserLevelStatus.Unconfirmed)
-                return Redirect(userProvider.GetSignInUrl(Url.Action("Authorize", new { cert = cert, requestLevel = requestLevel, returnUrl = returnUrl })));
+                return Redirect(userProvider.GetConfirmUrl(Url.Action("Authorize", new { cert = cert, requestLevel = requestLevel, returnUrl = returnUrl })));
             string signature;
             var token = service.GetUserToken(certificate, user, requestLevel, out signature);
             return Redirect(returnUrl + "?status=success&token=" + token + "&signature=" + signature);

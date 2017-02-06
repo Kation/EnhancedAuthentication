@@ -22,7 +22,7 @@ namespace Wodsoft.EnhancedAuthentication
             //if (appCert == null)
             //    throw new ArgumentNullException(nameof(appCert));
             if (appCert != null && !appCert.HasPrivateKey)
-                throw new ArgumentException("应用证书必须包含私钥。");
+                throw new ArgumentException("应用证书必须包含私钥。", nameof(appCert));
             if (revokedCertManager == null)
                 throw new ArgumentNullException(nameof(revokedCertManager));
             ServiceUri = serviceUri;

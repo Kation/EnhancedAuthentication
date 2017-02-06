@@ -18,5 +18,6 @@ namespace Wodsoft.EnhancedAuthentication
         Task RevokeAsync(int certId, DateTime expiredDate);
 
         Task<bool> CheckIsRevoked(int certId);
+        Task NewCertificateAsync(EnhancedAuthenticationCertificate cert);
     }
 }

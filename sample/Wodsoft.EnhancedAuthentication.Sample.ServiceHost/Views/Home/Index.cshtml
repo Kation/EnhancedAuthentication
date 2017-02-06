@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "主页";
+    if (User.Identity.IsAuthenticated)
+    {
+        Member member = await User.GetPermission<Member>();
+        <div>
+            当前您已登录，最高权限为@(member.Level)。
+        </div>
+    }
+    else
+    {
+        <div>当前您未登录。</div>
+    }
+}

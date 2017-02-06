@@ -42,6 +42,7 @@ namespace Wodsoft.EnhancedAuthentication
                 CertificateProvider.Period,
                 certId,
                 appInfoData);
+            await CertificateProvider.NewCertificateAsync(cert);
             return cert;
         }
 

@@ -138,12 +138,12 @@ namespace Wodsoft.EnhancedAuthentication.Mvc
                 return Redirect(userProvider.GetSignInUrl(Url.Action("Authorize", new { cert = cert, requestLevel = requestLevel, returnUrl = returnUrl })));
             var levelStatus = userProvider.CheckLevel(user, requestLevel);
             if (levelStatus == UserLevelStatus.Unauthorized)
-                return Redirect(returnUrl + "?status=unauthorized");
+                return Redirect(Encoding.ASCII.GetString(Convert.FromBase64String(returnUrl)) + "?status=unauthorized");
             else if (levelStatus == UserLevelStatus.Unconfirmed)
                 return Redirect(userProvider.GetConfirmUrl(Url.Action("Authorize", new { cert = cert, requestLevel = requestLevel, returnUrl = returnUrl })));
             string signature;
             var token = service.GetUserToken(certificate, user, requestLevel, out signature);
-            return Redirect(returnUrl + "?status=success&token=" + token + "&signature=" + signature);
+            return Redirect(Encoding.ASCII.GetString(Convert.FromBase64String(returnUrl)) + "?status=success&token=" + Uri.EscapeDataString(token) + "&signature=" + Uri.EscapeDataString(signature));
         }
     }
 }

@@ -1,11 +1,31 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Wodsoft.EnhancedAuthentication;
+using Wodsoft.EnhancedAuthentication.Client.AspNetCore;
 
-namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
+namespace Microsoft.Extensions.DependencyInjection
 {
-    public class EnhancedAuthenticationExtensions
+    public static class EnhancedAuthenticationExtensions
     {
+        public static void AddEnhancedAuthenticationClient(this IServiceCollection serviceCollection, EnhancedAuthenticationClient client)
+        {
+            serviceCollection.AddSingleton<EnhancedAuthenticationClient>(client);
+        }
+    }
+}
+
+namespace Microsoft.AspNetCore.Builder
+{
+    public static class EnhancedAuthenticationExtensions
+    {
+        public static void UseEnhancedAuthenticationClient(this IApplicationBuilder app, string path)
+        {
+            //var client = app.ApplicationServices.GetRequiredService<EnhancedAuthenticationClient>();
+            app.UseMiddleware<EnhancedAuthenticationClientMiddleware>(new PathString(path));
+        }
     }
 }

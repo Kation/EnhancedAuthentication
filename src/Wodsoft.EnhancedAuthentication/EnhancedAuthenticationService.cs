@@ -24,7 +24,7 @@ namespace Wodsoft.EnhancedAuthentication
                 throw new ArgumentNullException(nameof(userProvider));
             if (certificateProvider == null)
                 throw new ArgumentNullException(nameof(certificateProvider));
-            if (certificate.HasPrivateKey)
+            if (!certificate.HasPrivateKey)
                 throw new ArgumentException(nameof(certificate), "传入的证书必须有私钥。");
             Certificate = certificate;
             UserProvider = userProvider;
@@ -41,7 +41,8 @@ namespace Wodsoft.EnhancedAuthentication
                 CertificateProvider.KeySize,
                 CertificateProvider.Period,
                 certId,
-                appInfoData);
+                appInfoData,
+                Certificate);
             await CertificateProvider.NewCertificateAsync(cert);
             return cert;
         }
@@ -58,7 +59,8 @@ namespace Wodsoft.EnhancedAuthentication
                 CertificateProvider.KeySize,
                 CertificateProvider.Period,
                 newId,
-                oldCert.ExtendedInformation);
+                oldCert.ExtendedInformation,
+                Certificate);
             return cert;
         }
 

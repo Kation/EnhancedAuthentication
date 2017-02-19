@@ -51,7 +51,7 @@ namespace Wodsoft.EnhancedAuthentication
         /// <returns></returns>
         public async Task<EnhancedAuthenticationCertificate> RequestRootCertificate()
         {
-            var certData = await _Client.GetByteArrayAsync("/RootCertificate");
+            var certData = await _Client.GetByteArrayAsync("RootCertificate");
             RootCertificate = new EnhancedAuthenticationCertificate(certData);
             return RootCertificate;
         }
@@ -73,7 +73,7 @@ namespace Wodsoft.EnhancedAuthentication
             data.Add("expiredDate", expiredDate.Ticks.ToString());
             data.Add("signature", Convert.ToBase64String(signature));
             FormUrlEncodedContent content = new FormUrlEncodedContent(data);
-            var message = await _Client.PostAsync("/RenewCertificate", content);
+            var message = await _Client.PostAsync("RenewCertificate", content);
             var certData = await message.EnsureSuccessStatusCode().Content.ReadAsByteArrayAsync();
             message.Dispose();
             var cert = new EnhancedAuthenticationCertificate(certData);
@@ -107,7 +107,7 @@ namespace Wodsoft.EnhancedAuthentication
                 data.Add(property.Name, property.GetValue(appInfo)?.ToString());
 
             FormUrlEncodedContent content = new FormUrlEncodedContent(data);
-            var message = await _Client.PostAsync("/RequestCertificate", content);
+            var message = await _Client.PostAsync("RequestCertificate", content);
             var certData = await message.EnsureSuccessStatusCode().Content.ReadAsByteArrayAsync();
             message.Dispose();
             var cert = new EnhancedAuthenticationCertificate(certData);
@@ -133,7 +133,7 @@ namespace Wodsoft.EnhancedAuthentication
                 data.Add(property.Name, property.GetValue(appInfo)?.ToString());
 
             FormUrlEncodedContent content = new FormUrlEncodedContent(data);
-            var message = await _Client.PostAsync("/RequestCertificate", content);
+            var message = await _Client.PostAsync("ApplyCertificate", content);
             message.EnsureSuccessStatusCode();
             message.Dispose();
         }
@@ -165,7 +165,7 @@ namespace Wodsoft.EnhancedAuthentication
             if (RootCertificate == null)
                 throw new NotSupportedException("当前不存在根证书，不能续签证书。");
             DateTime? lastCheckDate = RevokedCertificateManager.LastAddDate;
-            string url = "/RevokedCertificate";
+            string url = "RevokedCertificate";
             if (lastCheckDate.HasValue)
                 url += "?startDate=" + lastCheckDate.Value.ToString("yyyy-MM-dd HH:mm:ss");
             var list = await _Client.GetStringAsync(url);
@@ -184,7 +184,7 @@ namespace Wodsoft.EnhancedAuthentication
             if (AppCertificate == null)
                 throw new NotSupportedException("当前不存在应用证书，不能获取授权地址证书。");
             string cert = Convert.ToBase64String(AppCertificate.ExportCertificate(false));
-            return new Uri(_Client.BaseAddress, "/Authorize?cert=" + cert + "&requestLevel=" + requestLevel + "&returnUrl=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(returnUrl)));
+            return new Uri(_Client.BaseAddress, "Authorize?cert=" + cert + "&requestLevel=" + requestLevel + "&returnUrl=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(returnUrl)));
         }
 
         /// <summary>

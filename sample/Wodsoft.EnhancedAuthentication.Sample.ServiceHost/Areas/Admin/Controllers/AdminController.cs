@@ -10,12 +10,8 @@ using Wodsoft.ComBoost.Mvc;
 namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [ComBoostAuthorize]
-    public class HomeController : Controller
+    public class AdminController : EntityController<Models.Admin>
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+
     }
 }

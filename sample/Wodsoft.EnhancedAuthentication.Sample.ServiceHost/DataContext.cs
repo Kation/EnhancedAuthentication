@@ -13,6 +13,12 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
 
         public DataContext() { }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseInMemoryDatabase();
+        }
+
         public DbSet<Admin> Admin { get; set; }
 
         public DbSet<Member> Member { get; set; }

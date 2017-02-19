@@ -27,8 +27,15 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var eAuth = Configuration.GetSection("eAuth");
+            var client = new EnhancedAuthenticationClient(eAuth.GetValue<Uri>("serviceUri"), null, null);
+            client.RequestRootCertificate().Wait();
+            client.RequestCertificate("admin", "admin", new AppInformation { AppId = "TestThirdPart" }).Wait();
+
             // Add framework services.
             services.AddMvc();
+
+            services.AddSingleton(client);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

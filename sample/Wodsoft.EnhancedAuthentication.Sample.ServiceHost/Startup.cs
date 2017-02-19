@@ -18,6 +18,7 @@ using Wodsoft.ComBoost.Data;
 using Wodsoft.EnhancedAuthentication.Sample.ServiceHost.Models;
 using Microsoft.AspNetCore.Routing;
 using System.IO;
+using Microsoft.AspNetCore.Mvc.Internal;
 
 namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
 {
@@ -48,6 +49,32 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
             {
                 options.AddComBoostMvcOptions();
             });
+            services.AddComBoostMvcAuthentication(new ComBoostAuthenticationOptions
+            {
+                LoginPath = context =>
+                {
+                    var routeData = context.GetRouteData();
+                    var area = routeData.DataTokens["authArea"];
+                    string path = "/Account/SignIn";
+                    if (area == null)
+                        return path;
+                    return "/" + area +  path;
+                },
+                LogoutPath = context =>
+                {
+                    var routeData = context.GetRouteData();
+                    var area = routeData.DataTokens["authArea"];
+                    string path = "/Account/SignOut";
+                    if (area == null)
+                        return path;
+                    return "/" + area + path;
+                },
+                ExpireTime = context =>
+                {
+                    var routeData = context.GetRouteData();
+                    return (TimeSpan)routeData.DataTokens["timeout"];
+                }
+            });
 
             services.AddScoped<DbContext, DataContext>(serviceProvider =>
                 new DataContext(new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase()
@@ -58,9 +85,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
-            services.AddSingleton<EnhancedAuthenticationCertificate>(_RootCert);
-            services.AddSingleton<IEnhancedAuthenticationCertificateProvider, EnhancedAuthenticationCertificateProvider>(s => new EnhancedAuthenticationCertificateProvider(root));
-            services.AddScoped<IEnhancedAuthenticationUserProvider, EnhancedAuthenticationUserProvider>();
+            services.AddEnhancedAuthenticationService<EnhancedAuthenticationUserProvider>(_RootCert, new EnhancedAuthenticationCertificateProvider(root));
             services.AddSingleton<IDomainServiceProvider, DomainProvider>(t =>
             {
                 var provider = new DomainProvider(t);
@@ -76,7 +101,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -89,17 +114,9 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
 
             app.UseStaticFiles();
 
-            app.UseComBoostAuthentication();
-            app.UseComBoostMvcAuthentication(new ComBoostAuthenticationOptions
-            {
-                ExpireTime = context =>
-                {
-                    var routeData = context.GetRouteData();
-                    return (TimeSpan)routeData.DataTokens["timeout"];
-                }
-            });
+            app.UseSession();
 
-            app.UseMvc(routes =>
+            var configureRoutes = new Action<IRouteBuilder>(routes =>
             {
                 routes.MapAreaRoute(
                     name: "Admin",
@@ -110,7 +127,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
                     dataTokens: new
                     {
                         authArea = "Admin",
-                        userType = typeof(Admin),
+                        permissionType = typeof(Admin),
                         timeout = TimeSpan.FromMinutes(15)
                     });
                 routes.MapRoute(
@@ -120,10 +137,23 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
                     constraints: null,
                     dataTokens: new
                     {
-                        userType = typeof(Member),
+                        permissionType = typeof(Member),
                         timeout = TimeSpan.FromDays(30)
                     });
             });
+            
+            var routeBuilder = new RouteBuilder(app)
+            {
+                DefaultHandler = app.ApplicationServices.GetRequiredService<MvcRouteHandler>(),
+            };
+            configureRoutes(routeBuilder);
+            routeBuilder.Routes.Insert(0, AttributeRouting.CreateAttributeMegaRoute(app.ApplicationServices));
+            var router = routeBuilder.Build();
+            app.UseMiddleware<RoutePreMiddleware>(router);
+
+            app.UseComBoostAuthentication();
+
+            app.UseMvc(configureRoutes);
         }
     }
 }

@@ -21,7 +21,6 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
             if (httpContextAccessor.HttpContext == null)
                 throw new ArgumentException(nameof(httpContextAccessor), "当前不存在Http上下文。");
             HttpContext = httpContextAccessor.HttpContext;
-            RouteData = HttpContext.GetRouteData();
             PermissionTypeTokenName = "permissionType";
             DatabaseContext = databaseContext;
         }
@@ -29,14 +28,13 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
         public IDatabaseContext DatabaseContext { get; private set; }
 
         public HttpContext HttpContext { get; private set; }
-
-        public RouteData RouteData { get; private set; }
-
+        
         public string PermissionTypeTokenName { get; private set; }
 
         protected virtual Type GetPermissionType()
         {
-            return RouteData.DataTokens[PermissionTypeTokenName] as Type;
+            var routeData =  HttpContext.GetRouteData();
+            return routeData.DataTokens[PermissionTypeTokenName] as Type;
         }
 
         protected override async Task<IPermission> GetPermissionByIdentity(string identity)

@@ -10,7 +10,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
 {
     public class EnhancedAuthenticationCertificateProvider : IEnhancedAuthenticationCertificateProvider
     {
-        private static object _Lock;
+        private static object _Lock = new object();
         private static readonly string _RevokePrefix = "revoked_";
 
         public EnhancedAuthenticationCertificateProvider(string root)

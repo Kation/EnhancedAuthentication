@@ -54,7 +54,7 @@
             data : $('#form').serialize(),
             type: 'POST',
             success: function(){
-                window.location = '@Html.Raw(Context.Request.Query["returnUrl"].Count > 0 ? Context.Request.Query["returnUrl"][0] : Url.Action("Index", "Home"))';
+                window.location = '@Html.Raw(Context.Request.Query["returnUrl"].Count > 0 ? System.Text.Encoding.ASCII.GetString(Convert.FromBase64String(Context.Request.Query["returnUrl"][0])) : Url.Action("Index", "Home"))';
             },
             error: function(xhr){
                 if (xhr.statusCode == '400'){

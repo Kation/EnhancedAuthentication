@@ -29,9 +29,9 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
                 return UserLevelStatus.Unauthorized;
             if (!Enum.TryParse<AccessLevel>(user.MaximumLevel, out max))
                 return UserLevelStatus.Unauthorized;
-            if ((int)accessLevel > (int)current)
+            if ((int)accessLevel >= (int)current)
                 return UserLevelStatus.Authorized;
-            if ((int)accessLevel > (int)max)
+            if ((int)accessLevel >= (int)max)
                 return UserLevelStatus.Unconfirmed;
             return UserLevelStatus.Unauthorized;
         }
@@ -39,14 +39,14 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
         public string GetConfirmUrl(string returnUrl)
         {
             returnUrl = Convert.ToBase64String(Encoding.ASCII.GetBytes(returnUrl));
-            string url = _HttpContext.Request.PathBase + "Account/Confirm?returnUrl=" + returnUrl;
+            string url = _HttpContext.Request.PathBase.Add("/Account/Confirm") + "?returnUrl=" + Uri.EscapeDataString(returnUrl);
             return url;
         }
 
         public string GetSignInUrl(string returnUrl)
         {
             returnUrl = Convert.ToBase64String(Encoding.ASCII.GetBytes(returnUrl));
-            string url = _HttpContext.Request.PathBase + "Account/SignIn?returnUrl=" + returnUrl;
+            string url = _HttpContext.Request.PathBase.Add("/Account/SignIn") + "?returnUrl=" + Uri.EscapeDataString(returnUrl);
             return url;
         }
 

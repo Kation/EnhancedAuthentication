@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Wodsoft.EnhancedAuthentication.Client.AspNetCore;
 
 namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
 {
@@ -32,7 +33,11 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
             client.RequestRootCertificate().Wait();
             client.RequestCertificate("admin", "admin", new AppInformation { AppId = "TestThirdPart" }).Wait();
 
-            // Add framework services.
+            services.AddComBoostAuthentication();
+            services.AddEnhancedAuthenticationClient(client);
+            services.AddSingleton<IEnhancedAuthenticationClientHandler, EnhancedAuthenticationClientHandler>();
+            services.AddMemoryCache();
+            services.AddSession();
             services.AddMvc();
 
             services.AddSingleton(client);
@@ -55,6 +60,10 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
             }
 
             app.UseStaticFiles();
+
+            app.UseSession();
+
+            app.UseEnhancedAuthenticationClient("/Account");
 
             app.UseMvc(routes =>
             {

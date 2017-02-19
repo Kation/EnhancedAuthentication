@@ -36,17 +36,17 @@
         }
 
         $.ajax({
-            url : '@Html.Raw(Url.Action("SignIn"))',
-            data : $('#form').serialize(),
+            url: '@Html.Raw(Url.Action("SignIn"))',
+            data: $('#form').serialize(),
             type: 'POST',
-            success: function(){
-                window.location = '@Html.Raw(Context.Request.Query["returnUrl"].Count > 0 ? Context.Request.Query["returnUrl"][0] : Url.Action("Index", "Home"))';
+            success: function () {
+                window.location = '@Html.Raw(Context.Request.Query["returnUrl"].Count > 0 ? System.Text.Encoding.ASCII.GetString(Convert.FromBase64String(Context.Request.Query["returnUrl"][0])) : Url.Action("Index", "Home"))';
             },
-            error: function(xhr){
-                if (xhr.status == '401'){
+            error: function (xhr) {
+                if (xhr.status == '401') {
                     alert(xhr.responseText);
                 }
-                else{
+                else {
                     alert('服务器错误。');
                 }
             }

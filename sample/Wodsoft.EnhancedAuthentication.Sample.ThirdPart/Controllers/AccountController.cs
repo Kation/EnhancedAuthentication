@@ -10,12 +10,6 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart.Controllers
 {
     public class AccountController : Controller
     {
-        public IActionResult SignIn(string returnUrl)
-        {
-
-            return View();
-        }
-
         public IActionResult Authorize()
         {
             return View();

@@ -187,9 +187,18 @@ namespace Wodsoft.EnhancedAuthentication
             return new Uri(_Client.BaseAddress, "Authorize?cert=" + Uri.EscapeDataString(cert) + "&requestLevel=" + requestLevel + "&returnUrl=" + Uri.EscapeDataString(Convert.ToBase64String(Encoding.ASCII.GetBytes(returnUrl))));
         }
 
-        public async Task<string> RequestService(string serviceName, object arguments)
+        public async Task<HttpContent> RequestService(string serviceName, StreamContent content)
         {
-
+            if (RootCertificate == null)
+                throw new NotSupportedException("当前不存在根证书，不能续签证书。");
+            if (AppCertificate == null)
+                throw new NotSupportedException("当前不存在应用证书，不能续签证书。");
+            content.Headers.Add("certificate", Convert.ToBase64String(AppCertificate.ExportCertificate(false)));
+            long expiredDate = DateTime.Now.AddMinutes(1).Ticks;
+            content.Headers.Add("expiredDate", expiredDate.ToString());
+            content.Headers.Add("signature", Convert.ToBase64String(AppCertificate.Cryptography.SignData(BitConverter.GetBytes(expiredDate), AppCertificate.HashMode)));
+            var message = await _Client.PostAsync(serviceName, content);
+            return message.EnsureSuccessStatusCode().Content;
         }
     }
 }

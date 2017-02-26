@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Wodsoft.EnhancedAuthentication.Client.AspNetCore;
+using Microsoft.AspNetCore.Authentication;
+using Wodsoft.ComBoost.Security;
 
 namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
 {
@@ -35,6 +37,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
 
             services.AddComBoostAuthentication();
             services.AddEnhancedAuthenticationClient(client);
+            services.AddScoped<AuthenticationHandler<ComBoostAuthenticationOptions>, ComBoostAuthenticationHandler>();
             services.AddSingleton<IEnhancedAuthenticationClientHandler, EnhancedAuthenticationClientHandler>();
             services.AddMemoryCache();
             services.AddSession();

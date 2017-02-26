@@ -49,32 +49,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
             {
                 options.AddComBoostMvcOptions();
             });
-            services.AddComBoostMvcAuthentication(new ComBoostAuthenticationOptions
-            {
-                LoginPath = context =>
-                {
-                    var routeData = context.GetRouteData();
-                    var area = routeData.DataTokens["authArea"];
-                    string path = "/Account/SignIn";
-                    if (area == null)
-                        return path;
-                    return "/" + area +  path;
-                },
-                LogoutPath = context =>
-                {
-                    var routeData = context.GetRouteData();
-                    var area = routeData.DataTokens["authArea"];
-                    string path = "/Account/SignOut";
-                    if (area == null)
-                        return path;
-                    return "/" + area + path;
-                },
-                ExpireTime = context =>
-                {
-                    var routeData = context.GetRouteData();
-                    return (TimeSpan)routeData.DataTokens["timeout"];
-                }
-            });
+            services.AddComBoostMvcAuthentication();
 
             services.AddScoped<DbContext, DataContext>(serviceProvider =>
                 new DataContext(new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase()
@@ -89,9 +64,9 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
             services.AddSingleton<IDomainServiceProvider, DomainProvider>(t =>
             {
                 var provider = new DomainProvider(t);
-                provider.RegisterExtension(typeof(EntityDomainService<>), typeof(EntitySearchExtension<>));
-                provider.RegisterExtension(typeof(EntityDomainService<>), typeof(EntityPagerExtension<>));
-                provider.RegisterExtension(typeof(EntityDomainService<>), typeof(EntityPasswordExtension<>));
+                provider.AddGenericDefinitionExtension(typeof(EntityDomainService<>), typeof(EntitySearchExtension<>));
+                provider.AddGenericDefinitionExtension(typeof(EntityDomainService<>), typeof(EntityPagerExtension<>));
+                provider.AddGenericDefinitionExtension(typeof(EntityDomainService<>), typeof(EntityPasswordExtension<>));
                 return provider;
             });
         }
@@ -115,8 +90,8 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
             app.UseStaticFiles();
 
             app.UseSession();
-
-            var configureRoutes = new Action<IRouteBuilder>(routes =>
+            
+            app.UseComBoostMvc(routes =>
             {
                 routes.MapAreaRoute(
                     name: "Admin",
@@ -128,7 +103,8 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
                     {
                         authArea = "Admin",
                         permissionType = typeof(Admin),
-                        timeout = TimeSpan.FromMinutes(15)
+                        timeout = TimeSpan.FromMinutes(15),
+                        loginPath = "/Admin/Account/SignIn"
                     });
                 routes.MapRoute(
                     name: "default",
@@ -138,22 +114,10 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
                     dataTokens: new
                     {
                         permissionType = typeof(Member),
-                        timeout = TimeSpan.FromDays(30)
+                        timeout = TimeSpan.FromDays(30),
+                        loginPath = "/Account/SignIn"
                     });
             });
-            
-            var routeBuilder = new RouteBuilder(app)
-            {
-                DefaultHandler = app.ApplicationServices.GetRequiredService<MvcRouteHandler>(),
-            };
-            configureRoutes(routeBuilder);
-            routeBuilder.Routes.Insert(0, AttributeRouting.CreateAttributeMegaRoute(app.ApplicationServices));
-            var router = routeBuilder.Build();
-            app.UseMiddleware<RoutePreMiddleware>(router);
-
-            app.UseComBoostAuthentication();
-
-            app.UseMvc(configureRoutes);
         }
     }
 }

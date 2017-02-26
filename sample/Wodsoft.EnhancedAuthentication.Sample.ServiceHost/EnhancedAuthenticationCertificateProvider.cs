@@ -39,6 +39,8 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
         private TimeSpan _Period = TimeSpan.FromDays(365);
         public TimeSpan Period { get { return _Period; } }
 
+        public EnhancedAuthenticationCertificateHashMode HashMode { get { return EnhancedAuthenticationCertificateHashMode.SHA256; } }
+
         public Task<bool> CheckIsRevoked(int certId)
         {
             return Task.FromResult(File.Exists(_Root.FullName + Path.DirectorySeparatorChar + _RevokePrefix + certId));

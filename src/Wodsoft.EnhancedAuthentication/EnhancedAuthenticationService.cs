@@ -41,6 +41,7 @@ namespace Wodsoft.EnhancedAuthentication
                 CertificateProvider.KeySize,
                 CertificateProvider.Period,
                 certId,
+                CertificateProvider.HashMode,
                 appInfoData,
                 Certificate);
             await CertificateProvider.NewCertificateAsync(cert);
@@ -59,6 +60,7 @@ namespace Wodsoft.EnhancedAuthentication
                 CertificateProvider.KeySize,
                 CertificateProvider.Period,
                 newId,
+                CertificateProvider.HashMode,
                 oldCert.ExtendedInformation,
                 Certificate);
             return cert;

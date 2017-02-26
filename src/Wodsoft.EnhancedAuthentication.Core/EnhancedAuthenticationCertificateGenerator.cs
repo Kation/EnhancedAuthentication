@@ -52,7 +52,7 @@ namespace Wodsoft.EnhancedAuthentication
         }
 
         public EnhancedAuthenticationCertificateGenerator(int keySize, TimeSpan period, int certId, byte[] extendedInformation, EnhancedAuthenticationCertificate root)
-            : this(keySize, period, certId, EnhancedAuthenticationCertificateHashMode.SHA1, extendedInformation, root)
+            : this(keySize, period, certId, EnhancedAuthenticationCertificateHashMode.SHA256, extendedInformation, root)
         { }
     }
 }

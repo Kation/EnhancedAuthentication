@@ -13,6 +13,8 @@ namespace Wodsoft.EnhancedAuthentication
 
         int KeySize { get; }
 
+        EnhancedAuthenticationCertificateHashMode HashMode { get; }
+
         Task<int[]> GetRevokedListAsync(DateTime? startDate);
 
         Task RevokeAsync(int certId, DateTime expiredDate);

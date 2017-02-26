@@ -9,7 +9,7 @@ using Wodsoft.EnhancedAuthentication.Client.AspNetCore;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class EnhancedAuthenticationExtensions
+    public static class EnhancedAuthenticationClientExtensions
     {
         public static void AddEnhancedAuthenticationClient(this IServiceCollection serviceCollection, EnhancedAuthenticationClient client)
         {
@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 namespace Microsoft.AspNetCore.Builder
 {
-    public static class EnhancedAuthenticationExtensions
+    public static class EnhancedAuthenticationClientExtensions
     {
         public static void UseEnhancedAuthenticationClient(this IApplicationBuilder app, string path)
         {

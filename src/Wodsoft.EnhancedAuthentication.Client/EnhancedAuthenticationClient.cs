@@ -187,19 +187,9 @@ namespace Wodsoft.EnhancedAuthentication
             return new Uri(_Client.BaseAddress, "Authorize?cert=" + Uri.EscapeDataString(cert) + "&requestLevel=" + requestLevel + "&returnUrl=" + Uri.EscapeDataString(Convert.ToBase64String(Encoding.ASCII.GetBytes(returnUrl))));
         }
 
-        /// <summary>
-        /// 获取用户令牌。
-        /// </summary>
-        /// <param name="token">用户令牌数据。</param>
-        /// <returns></returns>
-        public UserToken GetUserToken(string token)
+        public async Task<string> RequestService(string serviceName, object arguments)
         {
-            if (AppCertificate == null)
-                throw new NotSupportedException("当前不存在应用证书，不能续签证书。");
-            var data = Convert.FromBase64String(token);
-            data = AppCertificate.Cryptography.Decrypt(data, RSAEncryptionPadding.Pkcs1);
-            token = Encoding.ASCII.GetString(data);
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<UserToken>(token);
+
         }
     }
 }

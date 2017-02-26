@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -65,7 +66,7 @@ namespace Wodsoft.EnhancedAuthentication.Mvc
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> RenewCertificate([FromForm]string cert, [FromQuery]int expiredDate, [FromQuery]string signature)
+        public async Task<IActionResult> RenewCertificate([FromForm]string cert, [FromQuery]long expiredDate, [FromQuery]string signature)
         {
             var eDate = new DateTime(expiredDate);
             if (cert == null || eDate < DateTime.Now || signature == null)
@@ -144,6 +145,26 @@ namespace Wodsoft.EnhancedAuthentication.Mvc
             string signature;
             var token = service.GetUserToken(certificate, user, requestLevel, out signature);
             return Redirect(Encoding.ASCII.GetString(Convert.FromBase64String(returnUrl)) + "?status=success&token=" + Uri.EscapeDataString(token) + "&signature=" + Uri.EscapeDataString(signature));
+        }
+
+        protected virtual void VerifyServiceRequest()
+        {
+            if (!Request.Headers.ContainsKey("certificate"))
+                throw new ArgumentNullException("certificate");
+            if (!Request.Headers.ContainsKey("signature"))
+                throw new ArgumentNullException("signature");
+            if (!Request.Headers.ContainsKey("expiredDate"))
+                throw new ArgumentNullException("expiredDate");
+            var cert = new EnhancedAuthenticationCertificate(Convert.FromBase64String(Request.Headers["certificate"]));
+            var service = HttpContext.RequestServices.GetRequiredService<EnhancedAuthenticationService>();
+            if (!service.Certificate.VerifyCertificate(cert))
+                throw new UnauthorizedAccessException();
+            var signature = Convert.FromBase64String(Request.Headers["signature"]);
+            int expiredDate = int.Parse(Request.Headers["expiredDate"]);
+            if (!cert.Cryptography.VerifyData(BitConverter.GetBytes(expiredDate),signature, cert.HashMode))
+                throw new UnauthorizedAccessException();
+            if (new DateTime(expiredDate)<DateTime.Now)
+                throw new UnauthorizedAccessException();
         }
     }
 }

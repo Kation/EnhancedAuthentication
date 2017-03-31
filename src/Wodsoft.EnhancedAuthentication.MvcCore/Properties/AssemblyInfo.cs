@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Wodsoft.EnhancedAuthentication.Abstractions")]
+[assembly: AssemblyProduct("Wodsoft.EnhancedAuthentication.MvcCore")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -16,4 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ee06572f-37c0-40f9-99f7-977cd2d8758f")]
+[assembly: Guid("804dfeed-4f33-4326-9c06-91850ced2bae")]

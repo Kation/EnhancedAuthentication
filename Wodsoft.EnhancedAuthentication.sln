@@ -12,8 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Readme.md = Readme.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Abstractions", "src\Wodsoft.EnhancedAuthentication.Abstractions\Wodsoft.EnhancedAuthentication.Abstractions.xproj", "{EE06572F-37C0-40F9-99F7-977CD2D8758F}"
-EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Core", "src\Wodsoft.EnhancedAuthentication.Core\Wodsoft.EnhancedAuthentication.Core.xproj", "{FAEF9D0F-E87B-422C-B23E-945F6F181F55}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication", "src\Wodsoft.EnhancedAuthentication\Wodsoft.EnhancedAuthentication.xproj", "{0631666E-8E31-4CDD-B053-124F54438F1F}"
@@ -34,16 +32,14 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthenticat
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Client.AspNetCore", "src\Wodsoft.EnhancedAuthentication.Client.AspNetCore\Wodsoft.EnhancedAuthentication.Client.AspNetCore.xproj", "{5EFCE873-95F7-4C09-B51B-97D915867FBE}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.MvcCore", "src\Wodsoft.EnhancedAuthentication.MvcCore\Wodsoft.EnhancedAuthentication.MvcCore.xproj", "{804DFEED-4F33-4326-9C06-91850CED2BAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EE06572F-37C0-40F9-99F7-977CD2D8758F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE06572F-37C0-40F9-99F7-977CD2D8758F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE06572F-37C0-40F9-99F7-977CD2D8758F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE06572F-37C0-40F9-99F7-977CD2D8758F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FAEF9D0F-E87B-422C-B23E-945F6F181F55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FAEF9D0F-E87B-422C-B23E-945F6F181F55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAEF9D0F-E87B-422C-B23E-945F6F181F55}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -76,12 +72,15 @@ Global
 		{5EFCE873-95F7-4C09-B51B-97D915867FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EFCE873-95F7-4C09-B51B-97D915867FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EFCE873-95F7-4C09-B51B-97D915867FBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{804DFEED-4F33-4326-9C06-91850CED2BAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{804DFEED-4F33-4326-9C06-91850CED2BAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{804DFEED-4F33-4326-9C06-91850CED2BAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{804DFEED-4F33-4326-9C06-91850CED2BAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{EE06572F-37C0-40F9-99F7-977CD2D8758F} = {DACEE991-B7B4-49E1-B011-486970880626}
 		{FAEF9D0F-E87B-422C-B23E-945F6F181F55} = {DACEE991-B7B4-49E1-B011-486970880626}
 		{0631666E-8E31-4CDD-B053-124F54438F1F} = {DACEE991-B7B4-49E1-B011-486970880626}
 		{73B7BF56-D4F9-4709-803A-FCB3F982F2F7} = {DACEE991-B7B4-49E1-B011-486970880626}
@@ -90,5 +89,6 @@ Global
 		{234C869A-B168-4D6D-B65F-D5D1F35FD1BC} = {193DF88C-4C88-46FF-833A-21A4B728AF89}
 		{EFD5BBB5-1A2F-4BE9-94FE-61456A223462} = {193DF88C-4C88-46FF-833A-21A4B728AF89}
 		{5EFCE873-95F7-4C09-B51B-97D915867FBE} = {DACEE991-B7B4-49E1-B011-486970880626}
+		{804DFEED-4F33-4326-9C06-91850CED2BAE} = {DACEE991-B7B4-49E1-B011-486970880626}
 	EndGlobalSection
 EndGlobal

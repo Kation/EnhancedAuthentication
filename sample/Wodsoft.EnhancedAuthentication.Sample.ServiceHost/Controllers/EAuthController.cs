@@ -30,5 +30,30 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost.Controllers
                 return false;
             return admin.VerifyPassword(password);
         }
+
+        public async Task<IActionResult> GetUserInfo(Guid id)
+        {
+            try
+            {
+                VerifyServiceRequest();
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized();
+            }
+            var databaseContext = HttpContext.RequestServices.GetRequiredService<IDatabaseContext>();
+            var memberContext = databaseContext.GetContext<Member>();
+            var member = await memberContext.GetAsync(id);
+            if (member == null)
+                return NotFound();
+            return Content(Newtonsoft.Json.JsonConvert.SerializeObject(new
+            {
+                Username = member.Username
+            }));
+        }
     }
 }

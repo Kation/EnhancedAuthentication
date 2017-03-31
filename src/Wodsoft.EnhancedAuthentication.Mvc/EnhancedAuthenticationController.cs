@@ -109,7 +109,7 @@ namespace Wodsoft.EnhancedAuthentication.Mvc
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public virtual async Task<IActionResult> Authorize([FromQuery]string cert, [FromQuery]string requestLevel, [FromQuery]string returnUrl)
+        public virtual async Task<IActionResult> Authorize([FromQuery]string cert, [FromQuery]byte requestLevel, [FromQuery]string returnUrl)
         {
             string tReturnUrl;
             try
@@ -137,7 +137,7 @@ namespace Wodsoft.EnhancedAuthentication.Mvc
             var user = await userProvider.GetUserAsync();
             if (user == null)
                 return Redirect(userProvider.GetSignInUrl(Url.Action("Authorize", new { cert = cert, requestLevel = requestLevel, returnUrl = returnUrl })));
-            var levelStatus = userProvider.CheckLevel(user, requestLevel);
+            var levelStatus = user.CurrentLevel >= requestLevel ? UserLevelStatus.Authorized : (user.MaximumLevel >= requestLevel ? UserLevelStatus.Unconfirmed : UserLevelStatus.Unauthorized);
             if (levelStatus == UserLevelStatus.Unauthorized)
                 return Redirect(Encoding.ASCII.GetString(Convert.FromBase64String(returnUrl)) + "?status=unauthorized");
             else if (levelStatus == UserLevelStatus.Unconfirmed)

@@ -80,7 +80,7 @@ namespace Wodsoft.EnhancedAuthentication
             return CertificateProvider.GetRevokedListAsync(startDate);
         }
 
-        public string GetUserToken(EnhancedAuthenticationCertificate cert, IEnhancedAuthenticationUser user, string level, out string signature)
+        public string GetUserToken(EnhancedAuthenticationCertificate cert, IEnhancedAuthenticationUser user, byte level, out string signature)
         {
             if (cert == null)
                 throw new ArgumentNullException(nameof(cert));

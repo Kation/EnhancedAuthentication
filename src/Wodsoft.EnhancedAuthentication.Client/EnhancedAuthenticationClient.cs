@@ -187,7 +187,7 @@ namespace Wodsoft.EnhancedAuthentication
             return new Uri(_Client.BaseAddress, "Authorize?cert=" + Uri.EscapeDataString(cert) + "&requestLevel=" + requestLevel + "&returnUrl=" + Uri.EscapeDataString(Convert.ToBase64String(Encoding.ASCII.GetBytes(returnUrl))));
         }
 
-        public async Task<HttpContent> RequestService(string serviceName, StreamContent content)
+        public async Task<HttpContent> RequestService(string serviceName, HttpContent content)
         {
             if (RootCertificate == null)
                 throw new NotSupportedException("当前不存在根证书，不能续签证书。");

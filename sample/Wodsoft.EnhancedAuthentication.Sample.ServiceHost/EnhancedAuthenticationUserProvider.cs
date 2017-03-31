@@ -19,23 +19,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
             _Authentication = authenticationProvider.GetAuthentication();
             _HttpContext = httpContextAccessor.HttpContext;
         }
-
-        public UserLevelStatus CheckLevel(IEnhancedAuthenticationUser user, string level)
-        {
-            AccessLevel accessLevel, current, max;
-            if (!Enum.TryParse<AccessLevel>(level, out accessLevel))
-                return UserLevelStatus.Unauthorized;
-            if (!Enum.TryParse<AccessLevel>(user.CurrentLevel, out current))
-                return UserLevelStatus.Unauthorized;
-            if (!Enum.TryParse<AccessLevel>(user.MaximumLevel, out max))
-                return UserLevelStatus.Unauthorized;
-            if ((int)accessLevel >= (int)current)
-                return UserLevelStatus.Authorized;
-            if ((int)accessLevel >= (int)max)
-                return UserLevelStatus.Unconfirmed;
-            return UserLevelStatus.Unauthorized;
-        }
-
+        
         public string GetConfirmUrl(string returnUrl)
         {
             returnUrl = Convert.ToBase64String(Encoding.ASCII.GetBytes(returnUrl));
@@ -58,8 +42,8 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
             var user = new EAuthUser()
             {
                 UserId = member.Index.ToString(),
-                CurrentLevel = "LevelE",
-                MaximumLevel = member.Level.ToString()
+                CurrentLevel = (byte)AccessLevel.LevelE,
+                MaximumLevel = (byte)member.Level
             };
             return user;
         }

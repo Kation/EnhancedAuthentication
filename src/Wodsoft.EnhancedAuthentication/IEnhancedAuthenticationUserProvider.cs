@@ -10,6 +10,5 @@ namespace Wodsoft.EnhancedAuthentication
         Task<IEnhancedAuthenticationUser> GetUserAsync();
         string GetSignInUrl(string returnUrl);
         string GetConfirmUrl(string returnUrl);
-        UserLevelStatus CheckLevel(IEnhancedAuthenticationUser user, string level);
     }
 }

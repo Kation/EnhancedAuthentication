@@ -9,8 +9,8 @@ namespace Wodsoft.EnhancedAuthentication
     {
         string UserId { get; }
 
-        string CurrentLevel { get; }
+        byte CurrentLevel { get; }
 
-        string MaximumLevel { get; }
+        byte MaximumLevel { get; }
     }
 }

@@ -37,7 +37,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
 
             services.AddComBoostAuthentication();
             services.AddEnhancedAuthenticationClient(client);
-            services.AddScoped<AuthenticationHandler<ComBoostAuthenticationOptions>, ComBoostAuthenticationHandler>();
+            services.AddScoped<AuthenticationHandler<ComBoostAuthenticationOptions>, ComBoostAuthenticationSessionHandler>();
             services.AddSingleton<IEnhancedAuthenticationClientHandler, EnhancedAuthenticationClientHandler>();
             services.AddMemoryCache();
             services.AddSession();

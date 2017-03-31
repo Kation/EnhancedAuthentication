@@ -10,11 +10,9 @@
     "netstandard1.3": {
       "imports": "dnxcore50",
       "dependencies": {
-        "NETStandard.Library": "1.6.1"
+
       }
     },
-    "net461": {
-
-    }
+    "net461": {}
   }
 }

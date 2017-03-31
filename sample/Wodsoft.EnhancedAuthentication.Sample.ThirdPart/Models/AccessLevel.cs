@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost.Models
+namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart.Models
 {
     public enum AccessLevel : byte
     {

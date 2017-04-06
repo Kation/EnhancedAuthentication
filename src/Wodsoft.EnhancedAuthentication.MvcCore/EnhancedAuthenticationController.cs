@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Wodsoft.EnhancedAuthentication.Mvc
+namespace Wodsoft.EnhancedAuthentication.MvcCore
 {
     //[RequireHttps]
     public abstract class EnhancedAuthenticationController : ControllerBase

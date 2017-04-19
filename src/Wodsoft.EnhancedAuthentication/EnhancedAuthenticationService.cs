@@ -80,7 +80,7 @@ namespace Wodsoft.EnhancedAuthentication
             return CertificateProvider.GetRevokedListAsync(startDate);
         }
 
-        public string GetUserToken(EnhancedAuthenticationCertificate cert, IEnhancedAuthenticationUser user, byte level, out string signature)
+        public string GetUserToken(EnhancedAuthenticationCertificate cert, IEnhancedAuthenticationUser user, byte level, byte[] rnd, out string signature)
         {
             if (cert == null)
                 throw new ArgumentNullException(nameof(cert));
@@ -88,9 +88,8 @@ namespace Wodsoft.EnhancedAuthentication
             userToken.UserId = user.UserId;
             userToken.CurrentLevel = level;
             userToken.MaximumLevel = user.MaximumLevel;
-            userToken.ExpiredDate = DateTime.Now.AddMinutes(5).Ticks;
-            var data = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(userToken));
-            signature = Convert.ToBase64String(Certificate.Cryptography.SignData(data, Certificate.HashMode));
+            var data = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(userToken)).ToArray();
+            signature = Convert.ToBase64String(Certificate.Cryptography.SignData(data.Concat(rnd).ToArray(), Certificate.HashMode));
             data = cert.Cryptography.Encrypt(data, RSAEncryptionPadding.Pkcs1);
             return Convert.ToBase64String(data);
         }

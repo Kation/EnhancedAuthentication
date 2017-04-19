@@ -12,7 +12,5 @@ namespace Wodsoft.EnhancedAuthentication
         public byte CurrentLevel { get; set; }
 
         public byte MaximumLevel { get; set; }
-
-        public long ExpiredDate { get; set; }
     }
 }

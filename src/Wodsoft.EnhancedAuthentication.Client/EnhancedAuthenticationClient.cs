@@ -179,12 +179,12 @@ namespace Wodsoft.EnhancedAuthentication
         /// <param name="requestLevel">请求级别。</param>
         /// <param name="returnUrl">回调地址。</param>
         /// <returns></returns>
-        public Uri GetAuthorizeUrl(string requestLevel, string returnUrl)
+        public Uri GetAuthorizeUrl(string requestLevel, string returnUrl, byte[] rnd)
         {
             if (AppCertificate == null)
                 throw new NotSupportedException("当前不存在应用证书，不能获取授权地址证书。");
             string cert = Convert.ToBase64String(AppCertificate.ExportCertificate(false));
-            return new Uri(_Client.BaseAddress, "Authorize?cert=" + Uri.EscapeDataString(cert) + "&requestLevel=" + requestLevel + "&returnUrl=" + Uri.EscapeDataString(Convert.ToBase64String(Encoding.ASCII.GetBytes(returnUrl))));
+            return new Uri(_Client.BaseAddress, "Authorize?cert=" + Uri.EscapeDataString(cert) + "&requestLevel=" + requestLevel + "&returnUrl=" + Uri.EscapeDataString(Convert.ToBase64String(Encoding.ASCII.GetBytes(returnUrl))) + "&rnd=" + Uri.EscapeDataString(Convert.ToBase64String(rnd)));
         }
 
         public async Task<HttpContent> RequestService(string serviceName, HttpContent content)

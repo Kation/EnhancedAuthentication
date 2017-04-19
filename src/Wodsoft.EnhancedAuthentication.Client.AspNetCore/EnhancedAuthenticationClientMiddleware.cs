@@ -35,12 +35,21 @@ namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
                 string returnUrl = httpContext.Request.Scheme + "://" + httpContext.Request.Host + httpContext.Request.PathBase + _AuthorizePath;
                 if (httpContext.Request.Query.ContainsKey("returnUrl"))
                     returnUrl += "?returnUrl=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(Uri.EscapeUriString(httpContext.Request.Query["returnUrl"])));
-                Uri jump = client.GetAuthorizeUrl(httpContext.Request.Query["requestLevel"], returnUrl);
+                Random rnd = new Random();
+                var rndValue = BitConverter.GetBytes(rnd.NextDouble());
+                httpContext.Session.Set("eAuth_rnd", rndValue);
+                Uri jump = client.GetAuthorizeUrl(httpContext.Request.Query["requestLevel"], returnUrl, rndValue);
                 httpContext.Response.Redirect(jump.AbsoluteUri, false);
                 return;
             }
             else if (httpContext.Request.Path.StartsWithSegments(httpContext.Request.PathBase.Add(_AuthorizePath)))
             {
+                byte[] rndValue;
+                if (!httpContext.Session.TryGetValue("eAuth_rnd", out rndValue))
+                {
+                    httpContext.Response.StatusCode = 401;
+                    return;
+                }
                 if (!httpContext.Request.Query.ContainsKey("status"))
                 {
                     httpContext.Response.StatusCode = 400;
@@ -68,11 +77,12 @@ namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
                         httpContext.Response.StatusCode = 400;
                         return;
                     }
-                    if (!client.RootCertificate.Cryptography.VerifyData(tokenData, signature, client.RootCertificate.HashMode))
+                    if (!client.RootCertificate.Cryptography.VerifyData(tokenData.Concat(rndValue).ToArray(), signature, client.RootCertificate.HashMode))
                     {
                         httpContext.Response.StatusCode = 401;
                         return;
                     }
+                    httpContext.Session.Remove("eAuth_rnd");
                     var handler = httpContext.RequestServices.GetRequiredService<IEnhancedAuthenticationClientHandler>();
                     var result = new EnhancedAuthenticationClientAuthorizeResult(httpContext, token);
                     await handler.Authorize(result);

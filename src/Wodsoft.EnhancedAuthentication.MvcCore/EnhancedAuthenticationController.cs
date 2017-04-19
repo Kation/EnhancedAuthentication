@@ -109,12 +109,14 @@ namespace Wodsoft.EnhancedAuthentication.MvcCore
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public virtual async Task<IActionResult> Authorize([FromQuery]string cert, [FromQuery]byte requestLevel, [FromQuery]string returnUrl)
+        public virtual async Task<IActionResult> Authorize([FromQuery]string cert, [FromQuery]byte requestLevel, [FromQuery]string returnUrl, [FromQuery]string rnd)
         {
             string tReturnUrl;
+            byte[] rndData;
             try
             {
                 tReturnUrl = Encoding.ASCII.GetString(Convert.FromBase64String(returnUrl));
+                rndData = Convert.FromBase64String(rnd);
             }
             catch
             {
@@ -136,15 +138,15 @@ namespace Wodsoft.EnhancedAuthentication.MvcCore
             var userProvider = HttpContext.RequestServices.GetRequiredService<IEnhancedAuthenticationUserProvider>();
             var user = await userProvider.GetUserAsync();
             if (user == null)
-                return Redirect(userProvider.GetSignInUrl(Url.Action("Authorize", new { cert = cert, requestLevel = requestLevel, returnUrl = returnUrl })));
+                return Redirect(userProvider.GetSignInUrl(Url.Action("Authorize", new { cert = cert, requestLevel = requestLevel, returnUrl = returnUrl, rnd = rnd })));
             var levelStatus = user.CurrentLevel >= requestLevel ? UserLevelStatus.Authorized : (user.MaximumLevel >= requestLevel ? UserLevelStatus.Unconfirmed : UserLevelStatus.Unauthorized);
             if (levelStatus == UserLevelStatus.Unauthorized)
-                return Redirect(Encoding.ASCII.GetString(Convert.FromBase64String(returnUrl)) + "?status=unauthorized");
+                return Redirect(tReturnUrl + "?status=unauthorized");
             else if (levelStatus == UserLevelStatus.Unconfirmed)
-                return Redirect(userProvider.GetConfirmUrl(Url.Action("Authorize", new { cert = cert, requestLevel = requestLevel, returnUrl = returnUrl })));
+                return Redirect(userProvider.GetConfirmUrl(Url.Action("Authorize", new { cert = cert, requestLevel = requestLevel, returnUrl = returnUrl, rnd = rnd })));
             string signature;
-            var token = service.GetUserToken(certificate, user, requestLevel, out signature);
-            return Redirect(Encoding.ASCII.GetString(Convert.FromBase64String(returnUrl)) + "?status=success&token=" + Uri.EscapeDataString(token) + "&signature=" + Uri.EscapeDataString(signature));
+            var token = service.GetUserToken(certificate, user, requestLevel, rndData, out signature);
+            return Redirect(tReturnUrl + "?status=success&token=" + Uri.EscapeDataString(token) + "&signature=" + Uri.EscapeDataString(signature));
         }
 
         protected virtual void VerifyServiceRequest()

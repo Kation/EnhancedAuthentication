@@ -16,7 +16,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart.Controllers
         
         public IActionResult LevelE()
         {
-
+            throw new NotImplementedException();
         }
     }
 }

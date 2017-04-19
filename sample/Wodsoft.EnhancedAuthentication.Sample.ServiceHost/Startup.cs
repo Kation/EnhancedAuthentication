@@ -59,6 +59,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
             services.AddScoped<IAuthenticationProvider, ComBoostAuthenticationProvider>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<IDomainServiceAccessor, DomainServiceAccessor>();
 
             services.AddEnhancedAuthenticationService<EnhancedAuthenticationUserProvider>(_RootCert, new EnhancedAuthenticationCertificateProvider(root));
             services.AddSingleton<IDomainServiceProvider, DomainProvider>(t =>
@@ -76,7 +77,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -90,7 +91,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
             app.UseStaticFiles();
 
             app.UseSession();
-            
+
             app.UseComBoostMvc(routes =>
             {
                 routes.MapAreaRoute(

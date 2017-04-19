@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Wodsoft.EnhancedAuthentication.Mvc;
+using Wodsoft.EnhancedAuthentication.MvcCore;
 using Wodsoft.ComBoost.Data.Entity;
 using Microsoft.Extensions.DependencyInjection;
 using Wodsoft.EnhancedAuthentication.Sample.ServiceHost.Models;

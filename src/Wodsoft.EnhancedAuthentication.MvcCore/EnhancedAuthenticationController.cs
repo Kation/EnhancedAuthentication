@@ -162,7 +162,7 @@ namespace Wodsoft.EnhancedAuthentication.MvcCore
             if (!service.Certificate.VerifyCertificate(cert))
                 throw new UnauthorizedAccessException();
             var signature = Convert.FromBase64String(Request.Headers["signature"]);
-            int expiredDate = int.Parse(Request.Headers["expiredDate"]);
+            long expiredDate = long.Parse(Request.Headers["expiredDate"]);
             if (!cert.Cryptography.VerifyData(BitConverter.GetBytes(expiredDate),signature, cert.HashMode))
                 throw new UnauthorizedAccessException();
             if (new DateTime(expiredDate)<DateTime.Now)

@@ -10,6 +10,10 @@ using Microsoft.Extensions.Logging;
 using Wodsoft.EnhancedAuthentication.Client.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Wodsoft.ComBoost.Security;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Wodsoft.ComBoost.Data.Entity;
 
 namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
 {
@@ -37,13 +41,20 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
 
             services.AddComBoostAuthentication();
             services.AddEnhancedAuthenticationClient(client);
-            services.AddScoped<AuthenticationHandler<ComBoostAuthenticationOptions>, ComBoostAuthenticationSessionHandler>();
+            services.AddTransient<AuthenticationHandler<ComBoostAuthenticationOptions>, ComBoostAuthenticationSessionHandler>();
             services.AddSingleton<IEnhancedAuthenticationClientHandler, EnhancedAuthenticationClientHandler>();
             services.AddMemoryCache();
             services.AddSession();
             services.AddMvc();
 
-            services.AddSingleton(client);
+            services.AddScoped<DbContext, DataContext>(serviceProvider =>
+                new DataContext(new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase()
+                .Options.WithExtension(new ComBoostOptionExtension())));
+            services.AddScoped<IDatabaseContext, DatabaseContext>();
+            services.AddScoped<ISecurityProvider, ThirdPartSecurityProvider>();
+            services.AddScoped<IAuthenticationProvider, ComBoostAuthenticationProvider>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,8 +77,10 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
 
             app.UseSession();
 
-            app.UseEnhancedAuthenticationClient("/Account");
+            app.UseComBoostAuthentication();
 
+            app.UseEnhancedAuthenticationClient("/Account");
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

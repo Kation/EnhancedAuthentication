@@ -32,7 +32,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
                     var json = JsonConvert.DeserializeObject<JToken>(await responseContent.ReadAsStringAsync());
                     member = memberContext.Create();
                     member.Index = id;
-                    member.Username = json.Value<string>("username");
+                    member.Username = json.Value<string>("Username");
                     memberContext.Add(member);
                     await databaseContext.SaveAsync();
                 }

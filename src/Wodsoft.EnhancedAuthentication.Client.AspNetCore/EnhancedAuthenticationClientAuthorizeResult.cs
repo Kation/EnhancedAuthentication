@@ -8,12 +8,13 @@ namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
 {
     public class EnhancedAuthenticationClientAuthorizeResult
     {
-        public EnhancedAuthenticationClientAuthorizeResult(HttpContext context, UserToken token)
+        public EnhancedAuthenticationClientAuthorizeResult(HttpContext context, UserToken token, string returnUrl)
         {
             HttpContext = context;
             IsSuccess = token != null;
             UserToken = token;
             IsHandled = false;
+            Returnurl = returnUrl;
         }
 
         public HttpContext HttpContext { get; private set; }
@@ -23,5 +24,7 @@ namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
         public UserToken UserToken { get; private set; }
 
         public bool IsHandled { get; set; }
+
+        public string Returnurl { get; private set; }
     }
 }

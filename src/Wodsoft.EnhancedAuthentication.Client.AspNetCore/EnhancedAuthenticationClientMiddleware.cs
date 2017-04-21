@@ -34,7 +34,7 @@ namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
                 }
                 string returnUrl = httpContext.Request.Scheme + "://" + httpContext.Request.Host + httpContext.Request.PathBase + _AuthorizePath;
                 if (httpContext.Request.Query.ContainsKey("returnUrl"))
-                    returnUrl += "?returnUrl=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(Uri.EscapeUriString(httpContext.Request.Query["returnUrl"])));
+                    httpContext.Session.Set("eAuth_return", Encoding.ASCII.GetBytes(httpContext.Request.Query["returnUrl"]));
                 Random rnd = new Random();
                 var rndValue = BitConverter.GetBytes(rnd.NextDouble());
                 httpContext.Session.Set("eAuth_rnd", rndValue);
@@ -56,6 +56,10 @@ namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
                     return;
                 }
                 string status = httpContext.Request.Query["status"];
+                string returnUrl = null;
+                byte[] returnUrlData;
+                if (httpContext.Session.TryGetValue("eAuth_return", out returnUrlData))
+                    returnUrl = Encoding.ASCII.GetString(returnUrlData);
                 if (status == "success")
                 {
                     if (!httpContext.Request.Query.ContainsKey("token") || !httpContext.Request.Query.ContainsKey("signature"))
@@ -84,7 +88,7 @@ namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
                     }
                     httpContext.Session.Remove("eAuth_rnd");
                     var handler = httpContext.RequestServices.GetRequiredService<IEnhancedAuthenticationClientHandler>();
-                    var result = new EnhancedAuthenticationClientAuthorizeResult(httpContext, token);
+                    var result = new EnhancedAuthenticationClientAuthorizeResult(httpContext, token, returnUrl);
                     await handler.Authorize(result);
                     if (result.IsHandled)
                         return;
@@ -92,7 +96,7 @@ namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
                 else if (status == "unauthorized")
                 {
                     var handler = httpContext.RequestServices.GetRequiredService<IEnhancedAuthenticationClientHandler>();
-                    var result = new EnhancedAuthenticationClientAuthorizeResult(httpContext, null);
+                    var result = new EnhancedAuthenticationClientAuthorizeResult(httpContext, null, returnUrl);
                     await handler.Authorize(result);
                     if (result.IsHandled)
                         return;

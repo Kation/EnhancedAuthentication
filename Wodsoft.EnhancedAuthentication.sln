@@ -1,38 +1,38 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DACEE991-B7B4-49E1-B011-486970880626}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D5E410FE-6F1E-499B-A254-7AB2E3D6B65F}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
+		LICENSE = LICENSE
 		pack.bat = pack.bat
 		Readme.md = Readme.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Core", "src\Wodsoft.EnhancedAuthentication.Core\Wodsoft.EnhancedAuthentication.Core.xproj", "{FAEF9D0F-E87B-422C-B23E-945F6F181F55}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication", "src\Wodsoft.EnhancedAuthentication\Wodsoft.EnhancedAuthentication.xproj", "{0631666E-8E31-4CDD-B053-124F54438F1F}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Client", "src\Wodsoft.EnhancedAuthentication.Client\Wodsoft.EnhancedAuthentication.Client.xproj", "{73B7BF56-D4F9-4709-803A-FCB3F982F2F7}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Mvc", "src\Wodsoft.EnhancedAuthentication.Mvc\Wodsoft.EnhancedAuthentication.Mvc.xproj", "{AFFBBDA2-66A5-454F-9137-C5EECDB61747}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{387137C6-251F-4F94-AEA9-5B996268CC52}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.UnitTest", "test\Wodsoft.EnhancedAuthentication.UnitTest\Wodsoft.EnhancedAuthentication.UnitTest.xproj", "{2B981F60-AFB9-46DC-8870-F93A4B7EB431}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{193DF88C-4C88-46FF-833A-21A4B728AF89}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Sample.ServiceHost", "sample\Wodsoft.EnhancedAuthentication.Sample.ServiceHost\Wodsoft.EnhancedAuthentication.Sample.ServiceHost.xproj", "{234C869A-B168-4D6D-B65F-D5D1F35FD1BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wodsoft.EnhancedAuthentication.Core", "src\Wodsoft.EnhancedAuthentication.Core\Wodsoft.EnhancedAuthentication.Core.csproj", "{FAEF9D0F-E87B-422C-B23E-945F6F181F55}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Sample.ThirdPart", "sample\Wodsoft.EnhancedAuthentication.Sample.ThirdPart\Wodsoft.EnhancedAuthentication.Sample.ThirdPart.xproj", "{EFD5BBB5-1A2F-4BE9-94FE-61456A223462}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wodsoft.EnhancedAuthentication", "src\Wodsoft.EnhancedAuthentication\Wodsoft.EnhancedAuthentication.csproj", "{0631666E-8E31-4CDD-B053-124F54438F1F}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.Client.AspNetCore", "src\Wodsoft.EnhancedAuthentication.Client.AspNetCore\Wodsoft.EnhancedAuthentication.Client.AspNetCore.xproj", "{5EFCE873-95F7-4C09-B51B-97D915867FBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wodsoft.EnhancedAuthentication.Client", "src\Wodsoft.EnhancedAuthentication.Client\Wodsoft.EnhancedAuthentication.Client.csproj", "{73B7BF56-D4F9-4709-803A-FCB3F982F2F7}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Wodsoft.EnhancedAuthentication.MvcCore", "src\Wodsoft.EnhancedAuthentication.MvcCore\Wodsoft.EnhancedAuthentication.MvcCore.xproj", "{804DFEED-4F33-4326-9C06-91850CED2BAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wodsoft.EnhancedAuthentication.Mvc", "src\Wodsoft.EnhancedAuthentication.Mvc\Wodsoft.EnhancedAuthentication.Mvc.csproj", "{AFFBBDA2-66A5-454F-9137-C5EECDB61747}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wodsoft.EnhancedAuthentication.UnitTest", "test\Wodsoft.EnhancedAuthentication.UnitTest\Wodsoft.EnhancedAuthentication.UnitTest.csproj", "{2B981F60-AFB9-46DC-8870-F93A4B7EB431}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wodsoft.EnhancedAuthentication.Sample.ServiceHost", "sample\Wodsoft.EnhancedAuthentication.Sample.ServiceHost\Wodsoft.EnhancedAuthentication.Sample.ServiceHost.csproj", "{234C869A-B168-4D6D-B65F-D5D1F35FD1BC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wodsoft.EnhancedAuthentication.Sample.ThirdPart", "sample\Wodsoft.EnhancedAuthentication.Sample.ThirdPart\Wodsoft.EnhancedAuthentication.Sample.ThirdPart.csproj", "{EFD5BBB5-1A2F-4BE9-94FE-61456A223462}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wodsoft.EnhancedAuthentication.Client.AspNetCore", "src\Wodsoft.EnhancedAuthentication.Client.AspNetCore\Wodsoft.EnhancedAuthentication.Client.AspNetCore.csproj", "{5EFCE873-95F7-4C09-B51B-97D915867FBE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wodsoft.EnhancedAuthentication.MvcCore", "src\Wodsoft.EnhancedAuthentication.MvcCore\Wodsoft.EnhancedAuthentication.MvcCore.csproj", "{804DFEED-4F33-4326-9C06-91850CED2BAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -193,12 +193,28 @@ namespace Wodsoft.EnhancedAuthentication
                 throw new NotSupportedException("当前不存在根证书，不能续签证书。");
             if (AppCertificate == null)
                 throw new NotSupportedException("当前不存在应用证书，不能续签证书。");
-            content.Headers.Add("certificate", Convert.ToBase64String(AppCertificate.ExportCertificate(false)));
-            long expiredDate = DateTime.Now.AddMinutes(1).Ticks;
-            content.Headers.Add("expiredDate", expiredDate.ToString());
-            content.Headers.Add("signature", Convert.ToBase64String(AppCertificate.Cryptography.SignData(BitConverter.GetBytes(expiredDate), AppCertificate.HashMode)));
+            SecureHttpContent(content);
             var message = await _Client.PostAsync(serviceName, content);
             return message.EnsureSuccessStatusCode().Content;
+        }
+
+        private string _CertificateHeader;
+        private string _ExpiredDateHeader;
+        private string _SignatureHeader;
+        private DateTime _ExpiredDate;
+        protected void SecureHttpContent(HttpContent content)
+        {
+            content.Headers.Add("certificate", _CertificateHeader ?? (_CertificateHeader = Convert.ToBase64String(AppCertificate.ExportCertificate(false))));
+            if (_ExpiredDate < DateTime.Now)
+            {
+                var expiredDate = DateTime.Now.AddMinutes(10).Ticks;
+                _ExpiredDateHeader = expiredDate.ToString();
+                var expiredDateBytes = BitConverter.GetBytes(expiredDate);
+                _SignatureHeader = Convert.ToBase64String(AppCertificate.Cryptography.SignData(expiredDateBytes, AppCertificate.HashMode));
+                _ExpiredDate = DateTime.Now.AddMinutes(9);
+            }
+            content.Headers.Add("expiredDate", _ExpiredDateHeader);
+            content.Headers.Add("signature", _SignatureHeader);
         }
     }
 }

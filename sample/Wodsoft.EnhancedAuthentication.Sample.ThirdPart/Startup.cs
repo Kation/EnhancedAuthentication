@@ -39,17 +39,16 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
             client.RequestRootCertificate().Wait();
             client.RequestCertificate("admin", "admin", new AppInformation { AppId = "TestThirdPart" }).Wait();
 
-            services.AddComBoostAuthentication();
+            services.AddComBoostAuthentication<ComBoostAuthenticationSessionHandler>();
             services.AddEnhancedAuthenticationClient(client);
-            services.AddTransient<AuthenticationHandler<ComBoostAuthenticationOptions>, ComBoostAuthenticationSessionHandler>();
             services.AddSingleton<IEnhancedAuthenticationClientHandler, EnhancedAuthenticationClientHandler>();
             services.AddMemoryCache();
             services.AddSession();
             services.AddMvc();
 
             services.AddScoped<DbContext, DataContext>(serviceProvider =>
-                new DataContext(new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase()
-                .Options.WithExtension(new ComBoostOptionExtension())));
+                new DataContext(new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase("Test")
+                .Options));
             services.AddScoped<IDatabaseContext, DatabaseContext>();
             services.AddScoped<ISecurityProvider, ThirdPartSecurityProvider>();
             services.AddScoped<IAuthenticationProvider, ComBoostAuthenticationProvider>();
@@ -77,7 +76,7 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
 
             app.UseSession();
 
-            app.UseComBoostAuthentication();
+            app.UseAuthentication();
 
             app.UseEnhancedAuthenticationClient("/Account");
             

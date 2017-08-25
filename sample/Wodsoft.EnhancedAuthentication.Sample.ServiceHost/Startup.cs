@@ -49,11 +49,11 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
             {
                 options.AddComBoostMvcOptions();
             });
-            services.AddComBoostMvcAuthentication();
+            services.AddComBoostMvcAuthentication<ComBoostAuthenticationCookieHandler>();
 
             services.AddScoped<DbContext, DataContext>(serviceProvider =>
-                new DataContext(new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase()
-                .Options.WithExtension(new ComBoostOptionExtension())));
+                new DataContext(new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase("Test")
+                .Options));
             services.AddScoped<IDatabaseContext, DatabaseContext>();
             services.AddScoped<ISecurityProvider, SecurityProvider>();
             services.AddScoped<IAuthenticationProvider, ComBoostAuthenticationProvider>();
@@ -91,6 +91,8 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost
             app.UseStaticFiles();
 
             app.UseSession();
+
+            app.UseComBoost();
 
             app.UseComBoostMvc(routes =>
             {

@@ -8,7 +8,16 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Description>增强认证核心组件。
+包含：
+AppInformation
+EnhancedAuthenticationCertificate
+EnhancedAuthenticationCertificateHashMode
+IEnhancedAuthenticationCertificateProvider
+UserLevelStatus
+UserToken</Description>
   </PropertyGroup>
+  <Import Project="../../build.props" />
 
   <ItemGroup>
     <PackageReference Include="System.Security.Cryptography.Csp" Version="4.3.0" />

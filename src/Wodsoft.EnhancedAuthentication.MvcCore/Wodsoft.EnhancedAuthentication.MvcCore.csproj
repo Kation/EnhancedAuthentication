@@ -7,7 +7,11 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Description>增强认证用于Asp.Net Core Mvc的服务组件。
+包含：
+EnhancedAuthenticationController</Description>
   </PropertyGroup>
+  <Import Project="../../build.props" />
 
   <ItemGroup>
     <ProjectReference Include="..\Wodsoft.EnhancedAuthentication\Wodsoft.EnhancedAuthentication.csproj" />

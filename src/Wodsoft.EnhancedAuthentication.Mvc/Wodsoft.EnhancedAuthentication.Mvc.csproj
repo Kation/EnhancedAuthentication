@@ -8,6 +8,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
+  <Import Project="../../build.props" />
 
   <ItemGroup>
     <ProjectReference Include="..\Wodsoft.EnhancedAuthentication\Wodsoft.EnhancedAuthentication.csproj" />

@@ -8,7 +8,13 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Description>增强认证客户端组件。
+包含：
+EnhancedAuthenticationClient
+IRevokedCertificateManager
+MemoryRevokedCertificateManager</Description>
   </PropertyGroup>
+  <Import Project="../../build.props" />
 
   <ItemGroup>
     <ProjectReference Include="..\Wodsoft.EnhancedAuthentication.Core\Wodsoft.EnhancedAuthentication.Core.csproj" />

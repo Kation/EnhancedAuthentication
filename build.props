@@ -1,0 +1,17 @@
+<Project>
+  <PropertyGroup>
+    <Product>Wodsoft Enhanced Authentication</Product>
+    <PackageTags>eauth EnhancedAuthentication</PackageTags>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix Condition="'$(BuildNumber)' != ''">$(VersionSuffix)-$(BuildNumber)</VersionSuffix>
+    <Authors>Kation</Authors>
+    <PackageId>$(AssemblyName)</PackageId>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/Kation/EnhancedAuthentication</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <Version>$(VersionPrefix)</Version>
+    <Version Condition="'$(VersionSuffix)' != ''">$(Version)-$(VersionSuffix)</Version>
+  </PropertyGroup>
+</Project>

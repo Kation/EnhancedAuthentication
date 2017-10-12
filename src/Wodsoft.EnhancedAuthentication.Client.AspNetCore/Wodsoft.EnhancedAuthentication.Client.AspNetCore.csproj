@@ -7,7 +7,13 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Description>增强服务用于Asp.Net Core的客户端组件。
+包含：
+EnhancedAuthenticationClientAuthorizeResult
+EnhancedAuthenticationClientMiddleware
+IEnhancedAuthenticationClientHandler</Description>
   </PropertyGroup>
+  <Import Project="../../build.props" />
 
   <ItemGroup>
     <ProjectReference Include="..\Wodsoft.EnhancedAuthentication.Client\Wodsoft.EnhancedAuthentication.Client.csproj" />

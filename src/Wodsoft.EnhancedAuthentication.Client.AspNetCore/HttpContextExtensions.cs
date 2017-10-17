@@ -20,6 +20,8 @@ namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
             var client = httpContext.RequestServices.GetRequiredService<EnhancedAuthenticationClient>();
             if (!client.RootCertificate.VerifyCertificate(cert))
                 throw new UnauthorizedAccessException("验证证书失败。");
+            if (client.RevokedCertificateManager.Contains(cert.CertificateId))
+                throw new UnauthorizedAccessException("证书已撤销。");
             var signature = Convert.FromBase64String(signatureValue);
             long expiredDate = long.Parse(expiredDateValue);
             if (!cert.Cryptography.VerifyData(BitConverter.GetBytes(expiredDate), signature, cert.HashMode))

@@ -27,11 +27,11 @@ namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
             var client = httpContext.RequestServices.GetRequiredService<EnhancedAuthenticationClient>();
             if (httpContext.Request.Path.StartsWithSegments(httpContext.Request.PathBase.Add(_SignInPath)))
             {
-                if (!httpContext.Request.Query.ContainsKey("requestLevel"))
-                {
-                    httpContext.Response.StatusCode = 400;
-                    return;
-                }
+                //if (!httpContext.Request.Query.ContainsKey("requestLevel"))
+                //{
+                //    httpContext.Response.StatusCode = 400;
+                //    return;
+                //}
                 string returnUrl = httpContext.Request.Scheme + "://" + httpContext.Request.Host + httpContext.Request.PathBase + _AuthorizePath;
                 if (httpContext.Request.Query.ContainsKey("returnUrl"))
                     httpContext.Session.Set("eAuth_return", Encoding.ASCII.GetBytes(httpContext.Request.Query["returnUrl"]));

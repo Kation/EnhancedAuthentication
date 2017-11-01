@@ -101,7 +101,7 @@ namespace Wodsoft.EnhancedAuthentication.MvcCore
         public virtual Task<IActionResult> RootCertificate()
         {
             var service = HttpContext.RequestServices.GetRequiredService<EnhancedAuthenticationService>();
-            return Task.FromResult<IActionResult>(File(service.Certificate.ExportCertificate(false), "application/octet-stream"));
+            return Task.FromResult<IActionResult>(File(service.Certificate.ExportCertificate(false), "application/octet-stream", "root.pem"));
         }
 
         /// <summary>
@@ -111,11 +111,9 @@ namespace Wodsoft.EnhancedAuthentication.MvcCore
         [HttpGet]
         public virtual async Task<IActionResult> Authorize([FromQuery]string cert, [FromQuery]byte requestLevel, [FromQuery]string returnUrl, [FromQuery]string rnd)
         {
-            string tReturnUrl;
             byte[] rndData;
             try
             {
-                tReturnUrl = Encoding.ASCII.GetString(Convert.FromBase64String(returnUrl));
                 rndData = Convert.FromBase64String(rnd);
             }
             catch
@@ -141,12 +139,12 @@ namespace Wodsoft.EnhancedAuthentication.MvcCore
                 return Redirect(userProvider.GetSignInUrl(Url.Action("Authorize", new { cert = cert, requestLevel = requestLevel, returnUrl = returnUrl, rnd = rnd })));
             var levelStatus = user.CurrentLevel >= requestLevel ? UserLevelStatus.Authorized : (user.MaximumLevel >= requestLevel ? UserLevelStatus.Unconfirmed : UserLevelStatus.Unauthorized);
             if (levelStatus == UserLevelStatus.Unauthorized)
-                return Redirect(tReturnUrl + "?status=unauthorized");
+                return Redirect(returnUrl + "?status=unauthorized");
             else if (levelStatus == UserLevelStatus.Unconfirmed)
                 return Redirect(userProvider.GetConfirmUrl(Url.Action("Authorize", new { cert = cert, requestLevel = requestLevel, returnUrl = returnUrl, rnd = rnd })));
             string signature;
             var token = service.GetUserToken(certificate, user, requestLevel, rndData, out signature);
-            return Redirect(tReturnUrl + "?status=success&token=" + Uri.EscapeDataString(token) + "&signature=" + Uri.EscapeDataString(signature));
+            return Redirect(returnUrl + "?status=success&token=" + Uri.EscapeDataString(token) + "&signature=" + Uri.EscapeDataString(signature));
         }
 
         protected virtual void VerifyServiceRequest()

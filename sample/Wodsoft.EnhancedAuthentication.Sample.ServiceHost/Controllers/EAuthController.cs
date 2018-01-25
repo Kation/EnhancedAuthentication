@@ -21,14 +21,15 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost.Controllers
 
         protected override async Task<bool> CheckIsAdmin(string username, string password)
         {
-            if (username == null || password == null)
-                return false;
-            var databaseContext = HttpContext.RequestServices.GetRequiredService<IDatabaseContext>();
-            var adminContext = databaseContext.GetContext<Admin>();
-            var admin = await adminContext.SingleOrDefaultAsync(adminContext.Query().Where(t => t.Username.ToLower() == username.ToLower()));
-            if (admin == null)
-                return false;
-            return admin.VerifyPassword(password);
+            return true;
+            //if (username == null || password == null)
+            //    return false;
+            //var databaseContext = HttpContext.RequestServices.GetRequiredService<IDatabaseContext>();
+            //var adminContext = databaseContext.GetContext<Admin>();
+            //var admin = await adminContext.SingleOrDefaultAsync(adminContext.Query().Where(t => t.Username.ToLower() == username.ToLower()));
+            //if (admin == null)
+            //    return false;
+            //return admin.VerifyPassword(password);
         }
 
         public async Task<IActionResult> GetUserInfo(Guid id)

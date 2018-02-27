@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFrameworks>netstandard1.3;netstandard2.0;net40;net45;net46</TargetFrameworks>
     <AssemblyName>Wodsoft.EnhancedAuthentication.Core</AssemblyName>
     <PackageId>Wodsoft.EnhancedAuthentication.Core</PackageId>
     <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
@@ -18,9 +18,5 @@ UserLevelStatus
 UserToken</Description>
   </PropertyGroup>
   <Import Project="../../build.props" />
-
-  <ItemGroup>
-    <PackageReference Include="System.Security.Cryptography.Csp" Version="4.3.0" />
-  </ItemGroup>
 
 </Project>

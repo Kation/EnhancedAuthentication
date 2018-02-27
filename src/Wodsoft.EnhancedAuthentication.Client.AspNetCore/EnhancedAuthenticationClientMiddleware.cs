@@ -10,35 +10,58 @@ using System.Security.Cryptography;
 
 namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
 {
+    /// <summary>
+    /// 增强认证客户端中间件。
+    /// </summary>
     public class EnhancedAuthenticationClientMiddleware
     {
         private readonly RequestDelegate _Next;
         private readonly PathString _SignInPath, _AuthorizePath;
+        private readonly EnhancedAuthenticationProvider _Provider;
+        private readonly string _AuthorizeUrl;
 
-        public EnhancedAuthenticationClientMiddleware(RequestDelegate next, PathString path)
+        /// <summary>
+        /// 实例化中间件。
+        /// </summary>
+        /// <param name="next">下一请求委托。</param>
+        /// <param name="provider">增强认证提供器。</param>
+        /// <param name="options">配置选项。</param>
+        public EnhancedAuthenticationClientMiddleware(RequestDelegate next, EnhancedAuthenticationProvider provider, EnhancedAuthenticationClientMiddlewareOptions options)
         {
             _Next = next;
-            _SignInPath = path.Add("/SignIn");
-            _AuthorizePath = path.Add("/Authorize");
+            _Provider = provider;
+            _SignInPath = options.BasePath.Add("/SignIn");
+            _AuthorizePath = options.BasePath.Add("/Authorize");
+            _AuthorizeUrl = options.AuthorizeUrl;
         }
 
+        /// <summary>
+        /// 执行中间件。
+        /// </summary>
+        /// <param name="httpContext">Http上下文。</param>
+        /// <returns></returns>
         public async Task Invoke(HttpContext httpContext)
         {
-            var client = httpContext.RequestServices.GetRequiredService<EnhancedAuthenticationClient>();
+            var provider = httpContext.RequestServices.GetRequiredService<EnhancedAuthenticationProvider>();
             if (httpContext.Request.Path.StartsWithSegments(httpContext.Request.PathBase.Add(_SignInPath)))
             {
-                //if (!httpContext.Request.Query.ContainsKey("requestLevel"))
-                //{
-                //    httpContext.Response.StatusCode = 400;
-                //    return;
-                //}
+                byte requestLevel = 0;
+                if (httpContext.Request.Query.ContainsKey("requestLevel"))
+                {
+                    if (!byte.TryParse(httpContext.Request.Query["requestLevel"], out requestLevel))
+                    {
+                        httpContext.Response.StatusCode = 400;
+                        return;
+                    }
+                }
                 string returnUrl = httpContext.Request.Scheme + "://" + httpContext.Request.Host + httpContext.Request.PathBase + _AuthorizePath;
                 if (httpContext.Request.Query.ContainsKey("returnUrl"))
                     httpContext.Session.Set("eAuth_return", Encoding.ASCII.GetBytes(httpContext.Request.Query["returnUrl"]));
                 Random rnd = new Random();
                 var rndValue = BitConverter.GetBytes(rnd.NextDouble());
                 httpContext.Session.Set("eAuth_rnd", rndValue);
-                Uri jump = client.GetAuthorizeUrl(httpContext.Request.Query["requestLevel"], returnUrl, rndValue);
+                string cert = Convert.ToBase64String(_Provider.AppCertificate.ExportCertificate(false));
+                Uri jump = new Uri(_AuthorizeUrl + "?cert=" + Uri.EscapeDataString(cert) + "&requestLevel=" + requestLevel + "&returnUrl=" + Uri.EscapeDataString(returnUrl) + "&rnd=" + Uri.EscapeDataString(Convert.ToBase64String(rndValue)));
                 httpContext.Response.Redirect(jump.AbsoluteUri, false);
                 return;
             }
@@ -72,7 +95,7 @@ namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
                     byte[] signature;
                     try
                     {
-                        tokenData = client.AppCertificate.Cryptography.Decrypt(Convert.FromBase64String(httpContext.Request.Query["token"]), RSAEncryptionPadding.Pkcs1);
+                        tokenData = provider.AppCertificate.Cryptography.Decrypt(Convert.FromBase64String(httpContext.Request.Query["token"]));
                         token = JsonConvert.DeserializeObject<UserToken>(Encoding.ASCII.GetString(tokenData));
                         signature = Convert.FromBase64String(httpContext.Request.Query["signature"]);
                     }
@@ -81,7 +104,7 @@ namespace Wodsoft.EnhancedAuthentication.Client.AspNetCore
                         httpContext.Response.StatusCode = 400;
                         return;
                     }
-                    if (!client.RootCertificate.Cryptography.VerifyData(tokenData.Concat(rndValue).ToArray(), signature, client.RootCertificate.HashMode))
+                    if (!provider.RootCertificate.Cryptography.VerifyData(tokenData.Concat(rndValue).ToArray(), signature, provider.RootCertificate.HashMode))
                     {
                         httpContext.Response.StatusCode = 401;
                         return;

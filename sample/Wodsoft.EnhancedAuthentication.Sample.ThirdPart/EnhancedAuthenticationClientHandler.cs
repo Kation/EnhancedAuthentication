@@ -26,9 +26,9 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
                 var member = await memberContext.GetAsync(id);
                 if (member == null)
                 {
-                    var client = result.HttpContext.RequestServices.GetRequiredService<EnhancedAuthenticationClient>();
+                    var client = result.HttpContext.RequestServices.GetRequiredService<EnhancedAuthenticationCertificateClient>();
                     FormUrlEncodedContent requestContent = new FormUrlEncodedContent(new Dictionary<string, string>() { { "id", result.UserToken.UserId } });
-                    var responseContent = await client.RequestService("GetUserInfo", requestContent);
+                    var responseContent = await client.RequestServiceAsync("GetUserInfo", requestContent, "root.userinfo");
                     var json = JsonConvert.DeserializeObject<JToken>(await responseContent.ReadAsStringAsync());
                     member = memberContext.Create();
                     member.Index = id;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,10 +13,10 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
 {
     public class ThirdPartSecurityProvider : ISecurityProvider
     {
-        private IDatabaseContext _DatabaseContext;
-        public ThirdPartSecurityProvider(IDatabaseContext databaseContext)
+        private HttpContext _HttpContext;
+        public ThirdPartSecurityProvider(IHttpContextAccessor httpContextAccessor)
         {
-            _DatabaseContext = databaseContext;
+            _HttpContext = httpContextAccessor.HttpContext;
         }
 
         public string ConvertRoleToString(object role)
@@ -24,7 +26,8 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
 
         public async Task<IPermission> GetPermissionAsync(string identity)
         {
-            var memberContext = _DatabaseContext.GetContext<Member>();
+            var databaseContext = _HttpContext.RequestServices.GetRequiredService<IDatabaseContext>();
+            var memberContext = databaseContext.GetContext<Member>();
             var member = await memberContext.GetAsync(identity);
             return member;
         }

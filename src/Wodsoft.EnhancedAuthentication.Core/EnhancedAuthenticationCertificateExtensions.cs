@@ -6,8 +6,16 @@ using System.Threading.Tasks;
 
 namespace Wodsoft.EnhancedAuthentication
 {
+    /// <summary>
+    /// 增强认证证书扩展方法类。
+    /// </summary>
     public static class EnhancedAuthenticationCertificateExtensions
     {
+        /// <summary>
+        /// 导出公钥。
+        /// </summary>
+        /// <param name="rsa">RSA加密类。</param>
+        /// <returns>返回公钥数据。</returns>
         public static byte[] ExportPublicKey(this RSA rsa)
         {
             if (rsa == null)
@@ -17,6 +25,11 @@ namespace Wodsoft.EnhancedAuthentication
             return data;
         }
 
+        /// <summary>
+        /// 导出私钥。
+        /// </summary>
+        /// <param name="rsa">RSA加密类。</param>
+        /// <returns>返回私钥数据。</returns>
         public static byte[] ExportPrivateKey(this RSA rsa)
         {
             if (rsa == null)
@@ -34,6 +47,13 @@ namespace Wodsoft.EnhancedAuthentication
             return data;
         }
 
+        /// <summary>
+        /// 导入公钥。
+        /// </summary>
+        /// <param name="rsa">RSA加密类。</param>
+        /// <param name="keySize">密钥大小。</param>
+        /// <param name="data">密钥数据。</param>
+        /// <param name="startIndex">开始位置。</param>
         public static void ImportPublicKey(this RSA rsa, int keySize, byte[] data, int startIndex)
         {
             if (rsa == null)
@@ -54,7 +74,13 @@ namespace Wodsoft.EnhancedAuthentication
             rsa.ImportParameters(parameters);
         }
 
-
+        /// <summary>
+        /// 导入私钥。
+        /// </summary>
+        /// <param name="rsa">RSA加密类。</param>
+        /// <param name="keySize">密钥大小。</param>
+        /// <param name="data">密钥数据。</param>
+        /// <param name="startIndex">开始位置。</param>
         public static void ImportPrivateKey(this RSA rsa, int keySize, byte[] data, int startIndex)
         {
             if (rsa == null)
@@ -83,12 +109,20 @@ namespace Wodsoft.EnhancedAuthentication
             rsa.ImportParameters(parameters);
         }
 
+        /// <summary>
+        /// 签名数据。
+        /// </summary>
+        /// <param name="rsa">RSA加密类。</param>
+        /// <param name="data">要签名的数据。</param>
+        /// <param name="hashMode">哈希模式。</param>
+        /// <returns>返回签名数据。</returns>
         public static byte[] SignData(this RSA rsa, byte[] data, EnhancedAuthenticationCertificateHashMode hashMode)
         {
             if (rsa == null)
                 throw new ArgumentNullException(nameof(rsa));
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
+#if NETSTANDARD1_3 || NETSTANDARD2_0 ||NET46
             HashAlgorithmName hashName;
             switch (hashMode)
             {
@@ -111,8 +145,21 @@ namespace Wodsoft.EnhancedAuthentication
                     throw new CryptographicException("不支持的哈希算法。");
             }
             return rsa.SignData(data, hashName, RSASignaturePadding.Pkcs1);
+#else
+            RSAPKCS1SignatureFormatter formatter = new RSAPKCS1SignatureFormatter();
+            formatter.SetHashAlgorithm(hashMode.ToString());
+            return formatter.CreateSignature(data);
+#endif
         }
 
+        /// <summary>
+        /// 验证签名。
+        /// </summary>
+        /// <param name="rsa">RSA加密类。</param>
+        /// <param name="data">被签名的数据。</param>
+        /// <param name="signature">签名数据。</param>
+        /// <param name="hashMode">哈希模式。</param>
+        /// <returns>返回是否验证成功。</returns>
         public static bool VerifyData(this RSA rsa, byte[] data, byte[] signature, EnhancedAuthenticationCertificateHashMode hashMode)
         {
             if (rsa == null)
@@ -121,6 +168,7 @@ namespace Wodsoft.EnhancedAuthentication
                 throw new ArgumentNullException(nameof(data));
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
+#if NETSTANDARD1_3 || NETSTANDARD2_0 ||NET46
             HashAlgorithmName hashName;
             switch (hashMode)
             {
@@ -143,6 +191,49 @@ namespace Wodsoft.EnhancedAuthentication
                     throw new CryptographicException("不支持的哈希算法。");
             }
             return rsa.VerifyData(data, signature, hashName, RSASignaturePadding.Pkcs1);
+#else
+            RSAPKCS1SignatureDeformatter formatter = new RSAPKCS1SignatureDeformatter();
+            formatter.SetHashAlgorithm(hashMode.ToString());
+            return formatter.VerifySignature(data, signature);
+#endif
+        }
+
+        /// <summary>
+        /// 加密数据。
+        /// </summary>
+        /// <param name="rsa">RSA加密类。</param>
+        /// <param name="data">被加密的数据。</param>
+        /// <returns></returns>
+        public static byte[] Encrypt(this RSA rsa, byte[] data)
+        {
+            if (rsa == null)
+                throw new ArgumentNullException(nameof(rsa));
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+#if NET45 || NET40
+            return rsa.EncryptValue(data);
+#else
+            return rsa.Encrypt(data, RSAEncryptionPadding.Pkcs1);
+#endif
+        }
+
+        /// <summary>
+        /// 解密数据。
+        /// </summary>
+        /// <param name="rsa">RSA加密类。</param>
+        /// <param name="data">被解密的数据。</param>
+        /// <returns></returns>
+        public static byte[] Decrypt(this RSA rsa, byte[] data)
+        {
+            if (rsa == null)
+                throw new ArgumentNullException(nameof(rsa));
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+#if NET45 || NET40
+            return rsa.DecryptValue(data);
+#else
+            return rsa.Decrypt(data, RSAEncryptionPadding.Pkcs1);
+#endif
         }
     }
 }

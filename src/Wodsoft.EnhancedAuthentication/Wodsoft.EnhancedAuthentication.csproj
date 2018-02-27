@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFrameworks>netstandard1.3;netstandard2.0;net45;net46</TargetFrameworks>
     <AssemblyName>Wodsoft.EnhancedAuthentication</AssemblyName>
     <PackageId>Wodsoft.EnhancedAuthentication</PackageId>
     <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
@@ -19,6 +19,10 @@ IEnhancedAuthenticationUserProvider</Description>
 
   <ItemGroup>
     <ProjectReference Include="..\Wodsoft.EnhancedAuthentication.Core\Wodsoft.EnhancedAuthentication.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net45'">
+    <PackageReference Include="System.Security.Cryptography.Csp" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>

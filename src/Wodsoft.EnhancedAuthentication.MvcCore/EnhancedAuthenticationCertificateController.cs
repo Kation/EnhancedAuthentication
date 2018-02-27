@@ -1,63 +1,78 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Wodsoft.EnhancedAuthentication.MvcCore
 {
-    //[RequireHttps]
-    public abstract class EnhancedAuthenticationController : ControllerBase
+    /// <summary>
+    /// 增强认证证书服务。
+    /// </summary>
+    public abstract class EnhancedAuthenticationCertificateController : ControllerBase
     {
         /// <summary>
         /// 请求证书。
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> RequestCertificate([FromForm]string username, [FromForm]string password)
+        public virtual async Task<IActionResult> RequestCertificate()
         {
-            if (!await CheckIsAdmin(username, password))
+            if (!await CheckIsAdminAsync())
                 return Unauthorized();
-            var appInfo = GetAppInformation();
+            var appInfo = GetAppInformationFromRequest();
             var service = HttpContext.RequestServices.GetRequiredService<EnhancedAuthenticationService>();
             var cert = await service.CreateCertificateAsync(appInfo);
             return File(cert.ExportCertificate(true), "application/octet-stream");
         }
 
-        protected virtual AppInformation GetAppInformation()
+        /// <summary>
+        /// 从请求里获取应用信息。
+        /// </summary>
+        /// <returns></returns>
+        protected virtual AppInformation GetAppInformationFromRequest()
         {
             return new AppInformation { AppId = Request.Form["appId"] };
         }
 
-        protected abstract Task<bool> CheckIsAdmin(string username, string password);
+        /// <summary>
+        /// 检查是否有管理权限。
+        /// </summary>
+        /// <returns></returns>
+        protected abstract Task<bool> CheckIsAdminAsync();
 
         /// <summary>
         /// 申请证书。
         /// </summary>
+        /// <param name="callback">申请成功后通知地址。</param>
         /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> ApplyCertificate([FromQuery]string callback)
         {
-            var appInfo = GetAppInformation();
+            var appInfo = GetAppInformationFromRequest();
             await ApplyCertificateCore(appInfo, callback);
             return Ok();
         }
 
+        /// <summary>
+        /// 申请证书内部实现。
+        /// </summary>
+        /// <param name="appInfo">应用信息。</param>
+        /// <param name="callbakUrl">申请成功后通知地址。</param>
+        /// <returns></returns>
         protected abstract Task ApplyCertificateCore(AppInformation appInfo, string callbakUrl);
 
         /// <summary>
         /// 撤销的证书列表。
         /// </summary>
+        /// <param name="startDate">查询起始时间。</param>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> RevokedCertificate([FromQuery]DateTime? startDate)
         {
             var service = HttpContext.RequestServices.GetRequiredService<EnhancedAuthenticationService>();
-            var list = await service.RevokedCertificateList(startDate);
+            var list = await service.GetRevokedCertificateListAsync(startDate);
             return Content(string.Join(",", list));
         }
 
@@ -66,37 +81,26 @@ namespace Wodsoft.EnhancedAuthentication.MvcCore
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> RenewCertificate([FromForm]string cert, [FromQuery]long expiredDate, [FromQuery]string signature)
+        public async Task<IActionResult> RenewCertificate()
         {
-            var eDate = new DateTime(expiredDate);
-            if (cert == null || eDate < DateTime.Now || signature == null)
-                return BadRequest();
             EnhancedAuthenticationCertificate certificate;
             try
             {
-                var certData = Convert.FromBase64String(cert);
-                certificate = new EnhancedAuthenticationCertificate(certData);
+                certificate = HttpContext.VerifyServiceRequest("root.certificate");
             }
             catch
             {
                 return Unauthorized();
             }
-            byte[] signData;
-            try
-            {
-                signData = Convert.FromBase64String(signature);
-            }
-            catch
-            {
-                return BadRequest();
-            }
-            if (!certificate.Cryptography.VerifyData(BitConverter.GetBytes(expiredDate), signData, certificate.HashMode))
-                return Unauthorized();
             var service = HttpContext.RequestServices.GetRequiredService<EnhancedAuthenticationService>();
-            certificate = await service.RenewCertificate(certificate);
+            certificate = await service.RenewCertificateAsync(certificate);
             return File(certificate.ExportCertificate(true), "application/octet-stream");
         }
 
+        /// <summary>
+        /// 请求根证书。
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public virtual Task<IActionResult> RootCertificate()
         {
@@ -147,24 +151,5 @@ namespace Wodsoft.EnhancedAuthentication.MvcCore
             return Redirect(returnUrl + "?status=success&token=" + Uri.EscapeDataString(token) + "&signature=" + Uri.EscapeDataString(signature));
         }
 
-        protected virtual void VerifyServiceRequest()
-        {
-            if (!Request.Headers.ContainsKey("certificate"))
-                throw new ArgumentNullException("certificate");
-            if (!Request.Headers.ContainsKey("signature"))
-                throw new ArgumentNullException("signature");
-            if (!Request.Headers.ContainsKey("expiredDate"))
-                throw new ArgumentNullException("expiredDate");
-            var cert = new EnhancedAuthenticationCertificate(Convert.FromBase64String(Request.Headers["certificate"]));
-            var service = HttpContext.RequestServices.GetRequiredService<EnhancedAuthenticationService>();
-            if (!service.Certificate.VerifyCertificate(cert))
-                throw new UnauthorizedAccessException();
-            var signature = Convert.FromBase64String(Request.Headers["signature"]);
-            long expiredDate = long.Parse(Request.Headers["expiredDate"]);
-            if (!cert.Cryptography.VerifyData(BitConverter.GetBytes(expiredDate),signature, cert.HashMode))
-                throw new UnauthorizedAccessException();
-            if (new DateTime(expiredDate)<DateTime.Now)
-                throw new UnauthorizedAccessException();
-        }
     }
 }

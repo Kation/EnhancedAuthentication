@@ -1,222 +1,85 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Wodsoft.EnhancedAuthentication
 {
-    public class EnhancedAuthenticationClient
+    /// <summary>
+    /// 增强认证客户端基类。
+    /// </summary>
+    public abstract class EnhancedAuthenticationClient : IDisposable
     {
-        private HttpClient _Client;
-
-        public EnhancedAuthenticationClient(Uri serviceUri, EnhancedAuthenticationCertificate rootCert, EnhancedAuthenticationCertificate appCert, IRevokedCertificateManager revokedCertManager)
-        {
-            if (serviceUri == null)
-                throw new ArgumentNullException(nameof(serviceUri));
-            //if (rootCert == null)
-            //    throw new ArgumentNullException(nameof(rootCert));
-            //if (appCert == null)
-            //    throw new ArgumentNullException(nameof(appCert));
-            if (appCert != null && !appCert.HasPrivateKey)
-                throw new ArgumentException("应用证书必须包含私钥。", nameof(appCert));
-            if (revokedCertManager == null)
-                throw new ArgumentNullException(nameof(revokedCertManager));
-            ServiceUri = serviceUri;
-            RootCertificate = rootCert;
-            AppCertificate = appCert;
-            _Client = new HttpClient();
-            _Client.BaseAddress = serviceUri;
-            RevokedCertificateManager = revokedCertManager;
-        }
-
-        public EnhancedAuthenticationClient(Uri serviceUri, EnhancedAuthenticationCertificate rootCert, EnhancedAuthenticationCertificate appCert)
-            : this(serviceUri, rootCert, appCert, new MemoryRevokedCertificateManager())
-        { }
-
-        public Uri ServiceUri { get; private set; }
-
-        public EnhancedAuthenticationCertificate RootCertificate { get; private set; }
-
-        public EnhancedAuthenticationCertificate AppCertificate { get; private set; }
-
-        public IRevokedCertificateManager RevokedCertificateManager { get; private set; }
-
         /// <summary>
-        /// 请求根证书。
+        /// 实例化增强认证客户端。
         /// </summary>
-        /// <returns></returns>
-        public async Task<EnhancedAuthenticationCertificate> RequestRootCertificate()
+        /// <param name="serviceUri">服务地址，以“/”结尾。</param>
+        /// <param name="provider">增强认证提供器。</param>
+        public EnhancedAuthenticationClient(EnhancedAuthenticationProvider provider)
         {
-            var certData = await _Client.GetByteArrayAsync("RootCertificate");
-            RootCertificate = new EnhancedAuthenticationCertificate(certData);
-            return RootCertificate;
+            Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+            _SecureHeader = new ConcurrentDictionary<string, EnhancedAuthenticationSecurityTicket>();
         }
-
+        
         /// <summary>
-        /// 续签应用证书。
+        /// 获取增强认证提供器。
         /// </summary>
-        /// <returns></returns>
-        public async Task<EnhancedAuthenticationCertificate> RenewCertificate()
+        public EnhancedAuthenticationProvider Provider { get; private set; }
+        
+        private ConcurrentDictionary<string, EnhancedAuthenticationSecurityTicket> _SecureHeader;        
+        private EnhancedAuthenticationSecurityTicket CreateSecurityTicket(string purpose)
         {
-            if (RootCertificate == null)
-                throw new NotSupportedException("当前不存在根证书，不能续签证书。");
-            if (AppCertificate == null)
-                throw new NotSupportedException("当前不存在应用证书，不能续签证书。");
-            var expiredDate = DateTime.Now.AddMinutes(5);
-            var signature = AppCertificate.Cryptography.SignData(BitConverter.GetBytes(expiredDate.Ticks), AppCertificate.HashMode);
-            Dictionary<string, string> data = new Dictionary<string, string>();
-            data.Add("cert", Convert.ToBase64String(AppCertificate.ExportCertificate(false)));
-            data.Add("expiredDate", expiredDate.Ticks.ToString());
-            data.Add("signature", Convert.ToBase64String(signature));
-            FormUrlEncodedContent content = new FormUrlEncodedContent(data);
-            var message = await _Client.PostAsync("RenewCertificate", content);
-            var certData = await message.EnsureSuccessStatusCode().Content.ReadAsByteArrayAsync();
-            message.Dispose();
-            var cert = new EnhancedAuthenticationCertificate(certData);
-            if (!cert.HasPrivateKey)
-                throw new InvalidCastException("返回的证书不包含私钥。");
-            if (!RootCertificate.VerifyCertificate(cert))
-                throw new CryptographicException("证书验证失败。");
-            AppCertificate = cert;
-            return cert;
-        }
-
-        /// <summary>
-        /// 创建应用证书。
-        /// </summary>
-        /// <param name="username">管理用户名。</param>
-        /// <param name="password">管理密码。</param>
-        /// <param name="appInfo">应用信息。</param>
-        /// <returns></returns>
-        public async Task<EnhancedAuthenticationCertificate> RequestCertificate(string username, string password, AppInformation appInfo)
-        {
-            if (RootCertificate == null)
-                throw new NotSupportedException("当前不存在根证书，不能续签证书。");
-            if (username == null)
-                throw new ArgumentNullException(nameof(username));
-            if (password == null)
-                throw new ArgumentNullException(nameof(password));
-            Dictionary<string, string> data = new Dictionary<string, string>();
-            data.Add("username", username);
-            data.Add("password", password);
-            foreach (var property in appInfo.GetType().GetRuntimeProperties())
-                data.Add(property.Name, property.GetValue(appInfo)?.ToString());
-
-            FormUrlEncodedContent content = new FormUrlEncodedContent(data);
-            var message = await _Client.PostAsync("RequestCertificate", content);
-            var certData = await message.EnsureSuccessStatusCode().Content.ReadAsByteArrayAsync();
-            message.Dispose();
-            var cert = new EnhancedAuthenticationCertificate(certData);
-            if (!cert.HasPrivateKey)
-                throw new InvalidCastException("返回的证书不包含私钥。");
-            if (!RootCertificate.VerifyCertificate(cert))
-                throw new CryptographicException("证书验证失败。");
-            AppCertificate = cert;
-            return cert;
-        }
-
-        /// <summary>
-        /// 申请应用证书。
-        /// </summary>
-        /// <param name="appInfo">应用信息。</param>
-        /// <param name="callbackUrl">回调地址。</param>
-        /// <returns></returns>
-        public async Task ApplyCertificate(AppInformation appInfo, string callbackUrl)
-        {
-            Dictionary<string, string> data = new Dictionary<string, string>();
-            data.Add("callback", callbackUrl);
-            foreach (var property in appInfo.GetType().GetRuntimeProperties())
-                data.Add(property.Name, property.GetValue(appInfo)?.ToString());
-
-            FormUrlEncodedContent content = new FormUrlEncodedContent(data);
-            var message = await _Client.PostAsync("ApplyCertificate", content);
-            message.EnsureSuccessStatusCode();
-            message.Dispose();
-        }
-
-        /// <summary>
-        /// 应用应用证书。
-        /// </summary>
-        /// <param name="cert">应用证书。</param>
-        /// <returns></returns>
-        public void ApplyCertificate(EnhancedAuthenticationCertificate cert)
-        {
-            if (RootCertificate == null)
-                throw new NotSupportedException("当前不存在根证书，不能应用应用证书。");
-            if (cert == null)
-                throw new ArgumentNullException(nameof(cert));
-            if (!cert.HasPrivateKey)
-                throw new InvalidCastException("返回的证书不包含私钥。");
-            if (!RootCertificate.VerifyCertificate(cert))
-                throw new CryptographicException("证书验证失败。");
-            AppCertificate = cert;
-        }
-
-        /// <summary>
-        /// 更新证书吊销列表。
-        /// </summary>
-        /// <returns></returns>
-        public async Task RefreshRevokedCertificate()
-        {
-            if (RootCertificate == null)
-                throw new NotSupportedException("当前不存在根证书，不能续签证书。");
-            DateTime? lastCheckDate = RevokedCertificateManager.LastAddDate;
-            string url = "RevokedCertificate";
-            if (lastCheckDate.HasValue)
-                url += "?startDate=" + lastCheckDate.Value.ToString("yyyy-MM-dd HH:mm:ss");
-            var list = await _Client.GetStringAsync(url);
-            if (list.Length > 0)
-                RevokedCertificateManager.AddRange(list.Split(',').Select(t => int.Parse(t)).ToArray());
-        }
-
-        /// <summary>
-        /// 获取授权地址。
-        /// </summary>
-        /// <param name="requestLevel">请求级别。</param>
-        /// <param name="returnUrl">回调地址。</param>
-        /// <returns></returns>
-        public Uri GetAuthorizeUrl(string requestLevel, string returnUrl, byte[] rnd)
-        {
-            if (AppCertificate == null)
-                throw new NotSupportedException("当前不存在应用证书，不能获取授权地址证书。");
-            if (string.IsNullOrEmpty(requestLevel))
-                requestLevel = "0";
-            string cert = Convert.ToBase64String(AppCertificate.ExportCertificate(false));
-            return new Uri(_Client.BaseAddress, "Authorize?cert=" + Uri.EscapeDataString(cert) + "&requestLevel=" + requestLevel + "&returnUrl=" + Uri.EscapeDataString(returnUrl) + "&rnd=" + Uri.EscapeDataString(Convert.ToBase64String(rnd)));
-        }
-
-        public async Task<HttpContent> RequestService(string serviceName, HttpContent content)
-        {
-            if (RootCertificate == null)
-                throw new NotSupportedException("当前不存在根证书，不能续签证书。");
-            if (AppCertificate == null)
-                throw new NotSupportedException("当前不存在应用证书，不能续签证书。");
-            SecureHttpContent(content);
-            var message = await _Client.PostAsync(serviceName, content);
-            return message.EnsureSuccessStatusCode().Content;
-        }
-
-        private string _CertificateHeader;
-        private string _ExpiredDateHeader;
-        private string _SignatureHeader;
-        private DateTime _ExpiredDate;
-        protected void SecureHttpContent(HttpContent content)
-        {
-            content.Headers.Add("certificate", _CertificateHeader ?? (_CertificateHeader = Convert.ToBase64String(AppCertificate.ExportCertificate(false))));
-            if (_ExpiredDate < DateTime.Now)
+            var expiredDate = DateTimeOffset.Now.AddMinutes(10);
+            var expiredTick = expiredDate.ToUnixTimeMilliseconds();
+            var expiredDateBytes = BitConverter.GetBytes(expiredTick);
+            if (purpose != null)
+                expiredDateBytes = expiredDateBytes.Concat(Encoding.UTF8.GetBytes(purpose)).ToArray();
+            var signature = Provider.AppCertificate.Cryptography.SignData(expiredDateBytes, Provider.AppCertificate.HashMode);
+            return new EnhancedAuthenticationSecurityTicket
             {
-                var expiredDate = DateTime.Now.AddMinutes(10).Ticks;
-                _ExpiredDateHeader = expiredDate.ToString();
-                var expiredDateBytes = BitConverter.GetBytes(expiredDate);
-                _SignatureHeader = Convert.ToBase64String(AppCertificate.Cryptography.SignData(expiredDateBytes, AppCertificate.HashMode));
-                _ExpiredDate = DateTime.Now.AddMinutes(9);
-            }
-            content.Headers.Add("expiredDate", _ExpiredDateHeader);
-            content.Headers.Add("signature", _SignatureHeader);
+                ExpiredDateTick = expiredTick,
+                ExpiredDate = expiredDate,
+                Signature = signature
+            };
+        }
+
+        /// <summary>
+        /// 获取安全票据。
+        /// </summary>
+        /// <param name="purpose">用途，可以为空。</param>
+        /// <returns>返回安全票据。</returns>
+        protected virtual EnhancedAuthenticationSecurityTicket GetSecurityTicket(string purpose)
+        {
+            if (_Disposed)
+                throw new ObjectDisposedException("EnhancedAuthenticationClient");
+            var ticket = _SecureHeader.GetOrAdd(purpose, p => CreateSecurityTicket(p));
+            if (ticket.ExpiredDate < DateTime.Now)
+                _SecureHeader[purpose] = ticket = CreateSecurityTicket(purpose);
+            return ticket;
+        }
+
+        private bool _Disposed;
+        /// <summary>
+        /// 释放资源。
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(_Disposed);
+        }
+
+        /// <summary>
+        /// 释放资源。
+        /// </summary>
+        /// <param name="disposed">是否已释放。</param>
+        protected virtual void Dispose(bool disposed)
+        {
+            if (_Disposed)
+                return;
+            _Disposed = true;
+            _SecureHeader.Clear();
+            _SecureHeader = null;
         }
     }
 }

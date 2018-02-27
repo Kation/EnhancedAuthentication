@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace Wodsoft.EnhancedAuthentication
 {
+    /// <summary>
+    /// 增强认证证书生成器。
+    /// </summary>
     public class EnhancedAuthenticationCertificateGenerator : EnhancedAuthenticationCertificate
     {
         private EnhancedAuthenticationCertificateGenerator(TimeSpan period, int certId, EnhancedAuthenticationCertificateHashMode hashMode, byte[] extendedInformation)
+            : base()
         {
             if (certId < 1)
                 throw new ArgumentOutOfRangeException(nameof(certId), "证书Id不能小于1。");
@@ -21,6 +25,14 @@ namespace Wodsoft.EnhancedAuthentication
             ExtendedInformation = extendedInformation;
         }
 
+        /// <summary>
+        /// 生成证书。
+        /// </summary>
+        /// <param name="keySize">密钥大小。</param>
+        /// <param name="period">有效时间。</param>
+        /// <param name="certId">证书Id。</param>
+        /// <param name="hashMode">哈希模式。</param>
+        /// <param name="extendedInformation">附加信息。</param>
         public EnhancedAuthenticationCertificateGenerator(int keySize, TimeSpan period, int certId, EnhancedAuthenticationCertificateHashMode hashMode, byte[] extendedInformation)
             : this(period, certId, hashMode, extendedInformation)
         {
@@ -33,10 +45,26 @@ namespace Wodsoft.EnhancedAuthentication
             SignCertificate(this);
         }
 
+        /// <summary>
+        /// 生成证书。
+        /// </summary>
+        /// <param name="keySize">密钥大小。</param>
+        /// <param name="period">有效时间。</param>
+        /// <param name="certId">证书Id。</param>
+        /// <param name="extendedInformation">附加信息。</param>
         public EnhancedAuthenticationCertificateGenerator(int keySize, TimeSpan period, int certId, byte[] extendedInformation)
             : this(keySize, period, certId, EnhancedAuthenticationCertificateHashMode.SHA1, extendedInformation)
         { }
 
+        /// <summary>
+        /// 生成证书。
+        /// </summary>
+        /// <param name="keySize">密钥大小。</param>
+        /// <param name="period">有效时间。</param>
+        /// <param name="certId">证书Id。</param>
+        /// <param name="hashMode">哈希模式。</param>
+        /// <param name="extendedInformation">附加信息。</param>
+        /// <param name="root">给予签名的根证书。（需要私钥）</param>
         public EnhancedAuthenticationCertificateGenerator(int keySize, TimeSpan period, int certId, EnhancedAuthenticationCertificateHashMode hashMode, byte[] extendedInformation, EnhancedAuthenticationCertificate root)
             : this(period, certId, hashMode, extendedInformation)
         {
@@ -51,6 +79,14 @@ namespace Wodsoft.EnhancedAuthentication
             root.SignCertificate(this);
         }
 
+        /// <summary>
+        /// 生成证书。
+        /// </summary>
+        /// <param name="keySize">密钥大小。</param>
+        /// <param name="period">有效时间。</param>
+        /// <param name="certId">证书Id。</param>
+        /// <param name="extendedInformation">附加信息。</param>
+        /// <param name="root">给予签名的根证书。（需要私钥）</param>
         public EnhancedAuthenticationCertificateGenerator(int keySize, TimeSpan period, int certId, byte[] extendedInformation, EnhancedAuthenticationCertificate root)
             : this(keySize, period, certId, EnhancedAuthenticationCertificateHashMode.SHA256, extendedInformation, root)
         { }

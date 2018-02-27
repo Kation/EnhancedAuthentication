@@ -35,12 +35,14 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
         public void ConfigureServices(IServiceCollection services)
         {
             var eAuth = Configuration.GetSection("eAuth");
-            var client = new EnhancedAuthenticationClient(eAuth.GetValue<Uri>("serviceUri"), null, null);
+            var certProvider = new EnhancedAuthenticationProvider(null, null);
+            var client = new EnhancedAuthenticationCertificateClient(eAuth.GetValue<Uri>("serviceUri"), certProvider);
             client.RequestRootCertificate().Wait();
             client.RequestCertificate("admin", "admin", new AppInformation { AppId = "TestThirdPart" }).Wait();
 
             services.AddComBoostAuthentication<ComBoostAuthenticationSessionHandler>();
-            services.AddEnhancedAuthenticationClient(client);
+            services.AddSingleton(certProvider);
+            services.AddSingleton(client);
             services.AddSingleton<IEnhancedAuthenticationClientHandler, EnhancedAuthenticationClientHandler>();
             services.AddMemoryCache();
             services.AddSession();
@@ -76,9 +78,9 @@ namespace Wodsoft.EnhancedAuthentication.Sample.ThirdPart
 
             app.UseSession();
 
-            app.UseAuthentication();
+            app.UseComBoost();
 
-            app.UseEnhancedAuthenticationClient("/Account");
+            app.UseEnhancedAuthenticationClient( new EnhancedAuthenticationClientMiddlewareOptions { BasePath = "/Account", AuthorizeUrl = Configuration["eAuth:serviceUri"] + "Authorize" });
             
             app.UseMvc(routes =>
             {

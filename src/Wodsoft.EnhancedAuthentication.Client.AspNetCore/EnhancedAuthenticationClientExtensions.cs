@@ -7,25 +7,22 @@ using System.Threading.Tasks;
 using Wodsoft.EnhancedAuthentication;
 using Wodsoft.EnhancedAuthentication.Client.AspNetCore;
 
-namespace Microsoft.Extensions.DependencyInjection
-{
-    public static class EnhancedAuthenticationClientExtensions
-    {
-        public static void AddEnhancedAuthenticationClient(this IServiceCollection serviceCollection, EnhancedAuthenticationClient client)
-        {
-            serviceCollection.AddSingleton<EnhancedAuthenticationClient>(client);
-        }
-    }
-}
-
 namespace Microsoft.AspNetCore.Builder
 {
+    /// <summary>
+    /// 增强认证客户端扩展方法。
+    /// </summary>
     public static class EnhancedAuthenticationClientExtensions
     {
-        public static void UseEnhancedAuthenticationClient(this IApplicationBuilder app, string path)
+        /// <summary>
+        /// 使用增强认证客户端。
+        /// </summary>
+        /// <param name="app">应用构造器。</param>
+        /// <param name="options">配置选项。</param>
+        public static void UseEnhancedAuthenticationClient(this IApplicationBuilder app, EnhancedAuthenticationClientMiddlewareOptions options)
         {
             //var client = app.ApplicationServices.GetRequiredService<EnhancedAuthenticationClient>();
-            app.UseMiddleware<EnhancedAuthenticationClientMiddleware>(new PathString(path));
+            app.UseMiddleware<EnhancedAuthenticationClientMiddleware>(options);
         }
     }
 }

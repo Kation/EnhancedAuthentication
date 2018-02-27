@@ -12,31 +12,23 @@ using Wodsoft.EnhancedAuthentication.Sample.ServiceHost.Models;
 
 namespace Wodsoft.EnhancedAuthentication.Sample.ServiceHost.Controllers
 {
-    public class EAuthController : EnhancedAuthenticationController
+    public class EAuthController : EnhancedAuthenticationCertificateController
     {
         protected override Task ApplyCertificateCore(AppInformation appInfo, string callbakUrl)
         {
             return Task.CompletedTask;
         }
 
-        protected override async Task<bool> CheckIsAdmin(string username, string password)
+        protected override Task<bool> CheckIsAdminAsync()
         {
-            return true;
-            //if (username == null || password == null)
-            //    return false;
-            //var databaseContext = HttpContext.RequestServices.GetRequiredService<IDatabaseContext>();
-            //var adminContext = databaseContext.GetContext<Admin>();
-            //var admin = await adminContext.SingleOrDefaultAsync(adminContext.Query().Where(t => t.Username.ToLower() == username.ToLower()));
-            //if (admin == null)
-            //    return false;
-            //return admin.VerifyPassword(password);
+            return Task.FromResult(true);
         }
 
         public async Task<IActionResult> GetUserInfo(Guid id)
         {
             try
             {
-                VerifyServiceRequest();
+                HttpContext.VerifyServiceRequest("root.userinfo");
             }
             catch (ArgumentNullException ex)
             {

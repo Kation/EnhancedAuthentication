@@ -8,10 +8,10 @@
     <PackageId>$(AssemblyName)</PackageId>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Kation/EnhancedAuthentication</RepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
     <PackageReleaseNotes></PackageReleaseNotes>
     <Version>$(VersionPrefix)</Version>
     <Version Condition="'$(VersionSuffix)' != ''">$(Version)-$(VersionSuffix)</Version>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 </Project>

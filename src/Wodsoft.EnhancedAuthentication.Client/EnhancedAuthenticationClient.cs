@@ -15,7 +15,6 @@ namespace Wodsoft.EnhancedAuthentication
         /// <summary>
         /// 实例化增强认证客户端。
         /// </summary>
-        /// <param name="serviceUri">服务地址，以“/”结尾。</param>
         /// <param name="provider">增强认证提供器。</param>
         public EnhancedAuthenticationClient(EnhancedAuthenticationProvider provider)
         {

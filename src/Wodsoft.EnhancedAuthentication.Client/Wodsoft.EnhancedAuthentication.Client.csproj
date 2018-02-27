@@ -12,7 +12,11 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Description>增强认证客户端组件。
 包含：
+EnhancedAuthenticationCertificateClient
 EnhancedAuthenticationClient
+EnhancedAuthenticationHttpClient
+EnhancedAuthenticationProvider
+EnhancedAuthenticationSecurityTicket
 IRevokedCertificateManager
 MemoryRevokedCertificateManager</Description>
     <RootNamespace>Wodsoft.EnhancedAuthentication</RootNamespace>

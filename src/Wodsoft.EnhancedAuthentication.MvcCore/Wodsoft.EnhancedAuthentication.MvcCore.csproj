@@ -9,7 +9,7 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <Description>增强认证用于Asp.Net Core Mvc的服务组件。
 包含：
-EnhancedAuthenticationController</Description>
+EnhancedAuthenticationCertificateController</Description>
   </PropertyGroup>
   <Import Project="../../build.props" />
 

@@ -11,6 +11,7 @@
 包含：
 EnhancedAuthenticationClientAuthorizeResult
 EnhancedAuthenticationClientMiddleware
+EnhancedAuthenticationClientMiddlewareOptions
 IEnhancedAuthenticationClientHandler</Description>
   </PropertyGroup>
   <Import Project="../../build.props" />

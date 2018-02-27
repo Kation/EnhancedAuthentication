@@ -12,6 +12,7 @@
 包含：
 EnhancedAuthenticationCertificateGenerator
 EnhancedAuthenticationService
+IEnhancedAuthenticationCertificateProvider
 IEnhancedAuthenticationUser
 IEnhancedAuthenticationUserProvider</Description>
   </PropertyGroup>

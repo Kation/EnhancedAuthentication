@@ -75,6 +75,10 @@ namespace Wodsoft.EnhancedAuthentication
         }
 
         private bool _Disposed;
+        /// <summary>
+        /// 释放资源。
+        /// </summary>
+        /// <param name="disposed">是否已释放。</param>
         protected override void Dispose(bool disposed)
         {
             base.Dispose(disposed);

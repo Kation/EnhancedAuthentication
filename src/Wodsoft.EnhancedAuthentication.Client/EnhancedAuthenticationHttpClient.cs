@@ -43,10 +43,14 @@ namespace Wodsoft.EnhancedAuthentication
         /// <param name="content">请求内容。</param>
         /// <param name="purpose">用途，可以为空。</param>
         /// <returns>返回响应内容。</returns>
-        public async Task<HttpContent> RequestServiceAsync(string serviceName, HttpContent content, string purpose)
+        public async Task<HttpContent> RequestServiceAsync(string serviceName, HttpContent content, string purpose = null)
         {
             if (_Disposed)
                 throw new ObjectDisposedException("EnhancedAuthenticationClient");
+            if (serviceName == null)
+                throw new ArgumentNullException(nameof(serviceName));
+            if (content == null)
+                throw new ArgumentNullException(nameof(content));
             if (Provider.RootCertificate == null)
                 throw new NotSupportedException("当前不存在根证书，不能续签证书。");
             if (Provider.AppCertificate == null)
@@ -62,7 +66,7 @@ namespace Wodsoft.EnhancedAuthentication
         /// </summary>
         /// <param name="content">请求内容。</param>
         /// <param name="purpose">用途。</param>
-        protected virtual void SecureHttpContent(HttpContent content, string purpose)
+        protected virtual void SecureHttpContent(HttpContent content, string purpose = null)
         {
             if (_Disposed)
                 throw new ObjectDisposedException("EnhancedAuthenticationClient");

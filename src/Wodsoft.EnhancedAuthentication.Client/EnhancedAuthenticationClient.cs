@@ -49,7 +49,7 @@ namespace Wodsoft.EnhancedAuthentication
         /// </summary>
         /// <param name="purpose">用途，可以为空。</param>
         /// <returns>返回安全票据。</returns>
-        protected virtual EnhancedAuthenticationSecurityTicket GetSecurityTicket(string purpose)
+        protected virtual EnhancedAuthenticationSecurityTicket GetSecurityTicket(string purpose = null)
         {
             if (_Disposed)
                 throw new ObjectDisposedException("EnhancedAuthenticationClient");

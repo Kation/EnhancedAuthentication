@@ -80,7 +80,7 @@ namespace Wodsoft.EnhancedAuthentication
         /// <param name="data">要签名的数据。</param>
         /// <param name="purpose">用途。</param>
         /// <returns></returns>
-        public byte[] SignData(byte[] data, byte[] purpose)
+        public byte[] SignData(byte[] data, byte[] purpose = null)
         {
             if (AppCertificate == null)
                 throw new NotSupportedException("当前不存在应用证书，不能签名数据。");
@@ -113,7 +113,7 @@ namespace Wodsoft.EnhancedAuthentication
         /// <param name="signature">签名数据。</param>
         /// <param name="purpose">用途。</param>
         /// <returns></returns>
-        public bool VerifyData(EnhancedAuthenticationCertificate cert, byte[] data, byte[] signature, byte[] purpose)
+        public bool VerifyData(EnhancedAuthenticationCertificate cert, byte[] data, byte[] signature, byte[] purpose = null)
         {
             if (RootCertificate == null)
                 throw new NotSupportedException("当前不存在根证书，不能验证签名。");

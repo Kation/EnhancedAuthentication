@@ -57,7 +57,12 @@ namespace Wodsoft.EnhancedAuthentication
                 throw new NotSupportedException("当前不存在应用证书，不能续签证书。");
             SecureHttpContent(content, purpose);
             var message = await HttpClient.PostAsync(serviceName, content);
-            return message.EnsureSuccessStatusCode().Content;
+            if (!message.IsSuccessStatusCode)
+            {
+                var msg = await message.Content.ReadAsStringAsync();
+                throw new HttpRequestException(msg);
+            }
+            return message.Content;
         }
 
         private string _CertificateHeader;

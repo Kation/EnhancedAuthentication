@@ -53,7 +53,7 @@ namespace Wodsoft.EnhancedAuthentication
         /// <param name="certId">证书Id。</param>
         /// <param name="extendedInformation">附加信息。</param>
         public EnhancedAuthenticationCertificateGenerator(int keySize, TimeSpan period, int certId, byte[] extendedInformation)
-            : this(keySize, period, certId, EnhancedAuthenticationCertificateHashMode.SHA1, extendedInformation)
+            : this(keySize, period, certId, EnhancedAuthenticationCertificateHashMode.SHA256, extendedInformation)
         { }
 
         /// <summary>

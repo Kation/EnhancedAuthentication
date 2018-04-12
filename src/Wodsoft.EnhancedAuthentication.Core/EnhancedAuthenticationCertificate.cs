@@ -40,7 +40,11 @@ namespace Wodsoft.EnhancedAuthentication
             offset += 8;
             var keySize = BitConverter.ToInt32(raw, offset);
             offset += 4;
-            Cryptography = RSA.Create();
+#if NET40 || NET45
+            Cryptography = new RSACryptoServiceProvider();
+#else
+            Cryptography = new RSACng();
+#endif
             try
             {
                 if (HasPrivateKey)

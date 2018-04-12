@@ -211,7 +211,7 @@ namespace Wodsoft.EnhancedAuthentication
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 #if NET45 || NET40
-            return rsa.EncryptValue(data);
+            return ((RSACryptoServiceProvider)rsa).Encrypt(data, false);
 #else
             return rsa.Encrypt(data, RSAEncryptionPadding.Pkcs1);
 #endif
@@ -230,7 +230,7 @@ namespace Wodsoft.EnhancedAuthentication
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 #if NET45 || NET40
-            return rsa.DecryptValue(data);
+            return ((RSACryptoServiceProvider)rsa).Decrypt(data, false);
 #else
             return rsa.Decrypt(data, RSAEncryptionPadding.Pkcs1);
 #endif

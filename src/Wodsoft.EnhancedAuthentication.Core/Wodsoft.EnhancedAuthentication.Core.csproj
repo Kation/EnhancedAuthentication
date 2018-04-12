@@ -17,6 +17,24 @@ IEnhancedAuthenticationCertificateProvider
 UserLevelStatus
 UserToken</Description>
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
+    <PackageReference Include="System.Security.Cryptography.Cng">
+      <Version>4.4.0</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
+    <PackageReference Include="System.Security.Cryptography.Cng">
+      <Version>4.4.0</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Security.Cryptography.Cng">
+      <Version>4.4.0</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="../../build.props" />
 
 </Project>

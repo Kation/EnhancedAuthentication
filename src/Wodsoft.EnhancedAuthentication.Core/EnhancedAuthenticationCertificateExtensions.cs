@@ -146,9 +146,12 @@ namespace Wodsoft.EnhancedAuthentication
             }
             return rsa.SignData(data, hashName, RSASignaturePadding.Pkcs1);
 #else
-            RSAPKCS1SignatureFormatter formatter = new RSAPKCS1SignatureFormatter();
+            var hashAlgorithm = HashAlgorithm.Create(hashMode.ToString());
+            var hash = hashAlgorithm.ComputeHash(data);
+
+            RSAPKCS1SignatureFormatter formatter = new RSAPKCS1SignatureFormatter(rsa);
             formatter.SetHashAlgorithm(hashMode.ToString());
-            return formatter.CreateSignature(data);
+            return formatter.CreateSignature(hash);
 #endif
         }
 
@@ -192,9 +195,12 @@ namespace Wodsoft.EnhancedAuthentication
             }
             return rsa.VerifyData(data, signature, hashName, RSASignaturePadding.Pkcs1);
 #else
-            RSAPKCS1SignatureDeformatter formatter = new RSAPKCS1SignatureDeformatter();
+            var hashAlgorithm = HashAlgorithm.Create(hashMode.ToString());
+            var hash = hashAlgorithm.ComputeHash(data);
+
+            RSAPKCS1SignatureDeformatter formatter = new RSAPKCS1SignatureDeformatter(rsa);
             formatter.SetHashAlgorithm(hashMode.ToString());
-            return formatter.VerifySignature(data, signature);
+            return formatter.VerifySignature(hash, signature);
 #endif
         }
 
